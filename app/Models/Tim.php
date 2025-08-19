@@ -15,6 +15,12 @@ class Tim extends Model
         'instansi'
     ];
 
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class);
+    }
+
+
     public function cabangLomba()
     {
         return $this->belongsTo(CabangLomba::class);

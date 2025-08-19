@@ -20,6 +20,7 @@ class CabangLombaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
     protected static ?string $navigationGroup = 'Data Master';
     protected static ?int $navigationSort = 0;
+    protected static ?string $pluralModelLabel = 'Cabang Lomba';
 
 
     public static function form(Form $form): Form
