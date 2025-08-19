@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('tim1_score')->default(0);
             $table->integer('tim2_score')->default(0);
             $table->foreignId('winner_id')->nullable()->constrained('tims')->nullOnDelete();
-            $table->enum('status', ['pending', 'live', 'finished'])->default('pending');
+            $table->enum('status', ['upcoming', 'live', 'finished'])->default('upcoming');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
             $table->timestamps();
