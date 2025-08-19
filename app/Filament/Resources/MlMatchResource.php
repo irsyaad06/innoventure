@@ -108,11 +108,12 @@ class MlMatchResource extends Resource
             ->defaultGroup('round')
             ->columns([
                 Tables\Columns\TextColumn::make('tim1.nama')->label('Tim 1')->color('danger'),
-                Tables\Columns\TextColumn::make('vs')->label('vs'),
                 Tables\Columns\TextColumn::make('tim2.nama')->label('Tim 2')->color('info'),
                 Tables\Columns\TextColumn::make('best_of')->label('BO')->badge()->color('gray'),
-                Tables\Columns\TextInputColumn::make('tim1_score'),
-                Tables\Columns\TextInputColumn::make('tim2_score'),
+                Tables\Columns\TextInputColumn::make('tim1_score')
+                    ->disabled(fn(MlMatch $record): bool => $record->status === 'finished'),
+                Tables\Columns\TextInputColumn::make('tim2_score')
+                    ->disabled(fn(MlMatch $record): bool => $record->status === 'finished'),
                 Tables\Columns\TextColumn::make('winner.nama')->label('Winner')->badge()->color('success'),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
@@ -132,30 +133,32 @@ class MlMatchResource extends Resource
                 // Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('toggleStatus')
                     ->label('Ganti Status')
+                    ->disabled(fn (MlMatch $record): bool => $record->status === 'finished' || $record->status === 'live')
                     ->icon('heroicon-m-arrow-path')
                     ->color('primary')
                     ->action(function (MlMatch $record) {
                         $currentStatus = $record->status;
-                        $nextStatus = match($currentStatus) {
+                        $nextStatus = match ($currentStatus) {
                             'upcoming' => 'live',
                             'live' => 'finished',
                             'finished' => 'upcoming',
                             default => 'upcoming'
                         };
-                        
+
                         $record->update(['status' => $nextStatus]);
-                        
+
                         return redirect()->back()->with('success', 'Status berhasil diubah menjadi ' . ucfirst($nextStatus));
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Konfirmasi Perubahan Status')
-                    ->modalDescription(fn (MlMatch $record) => 
-                        "Apakah Anda yakin ingin mengubah status dari {$record->status} ke " . 
-                        match($record->status) {
-                            'upcoming' => 'live',
-                            'live' => 'finished',
-                            default => 'upcoming'
-                        } . "?"
+                    // ->modalHeading('Konfirmasi Perubahan Status')
+                    ->modalHeading(
+                        fn(MlMatch $record) =>
+                        "Ubah status dari {$record->status} ke " .
+                            match ($record->status) {
+                                'upcoming' => 'live',
+                                'live' => 'finished',
+                                default => 'upcoming'
+                            } . "?"
                     )
                     ->modalSubmitActionLabel('Ya, Ubah Status'),
             ])

@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\ToggleColumn;
 
 class WebdevProgressResource extends Resource
 {
@@ -28,6 +29,12 @@ class WebdevProgressResource extends Resource
                 Forms\Components\Select::make('tim_id')
                     ->label('Tim')
                     ->relationship('tim', 'nama')
+                    ->options(function () {
+                        return Tim::whereHas('cabangLomba', function ($query) {
+                            $query->where('nama', 'Web Development');
+                        })->pluck('nama', 'id');
+                    })
+                    ->searchable()
                     ->required(),
 
                 Forms\Components\Toggle::make('web_app_uploaded')
@@ -56,26 +63,36 @@ class WebdevProgressResource extends Resource
 
                 Tables\Columns\IconColumn::make('web_app_uploaded')
                     ->label('Web App')
-                    ->boolean()
+                    ->boolean() // otomatis cek true/false
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->colors([
+                        'success' => true,  // hijau kalau true
+                        'danger' => false,  // merah kalau false
+                    ])
+                    ->action(fn($record) => $record->update([
+                        'web_app_uploaded' => ! $record->web_app_uploaded,
+                    ])),
 
                 Tables\Columns\IconColumn::make('ppt_uploaded')
                     ->label('PPT')
-                    ->boolean()
+                    ->boolean() // otomatis cek true/false
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->colors([
+                        'success' => true,  // hijau kalau true
+                        'danger' => false,  // merah kalau false
+                    ])
+                    ->action(fn($record) => $record->update([
+                        'ppt_uploaded' => ! $record->ppt_uploaded,
+                    ])),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
