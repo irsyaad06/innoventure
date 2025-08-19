@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cabang_lomba_id')->constrained('cabang_lombas')->onDelete('cascade');
             $table->string('nama');
-            $table->string('instansi');
+            $table->string('instansi_id');
             $table->timestamps();
         });
     }

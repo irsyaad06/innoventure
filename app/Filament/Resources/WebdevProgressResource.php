@@ -56,7 +56,7 @@ class WebdevProgressResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('tim.instansi')
+                Tables\Columns\TextColumn::make('tim.instansi.nama')
                     ->label('Instansi')
                     ->searchable()
                     ->sortable(),

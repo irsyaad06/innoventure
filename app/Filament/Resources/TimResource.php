@@ -32,10 +32,15 @@ class TimResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Cabang Lomba'),
-                Forms\Components\TextInput::make('nama')
+
+                Forms\Components\Select::make('instansi_id')
+                    ->relationship('instansi', 'nama')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('instansi')
+                    ->preload()
+                    ->searchable(),
+
+                Forms\Components\TextInput::make('nama')
+                    ->label('Nama Tim')
                     ->required()
                     ->maxLength(255),
             ])->columns(1);
@@ -45,6 +50,8 @@ class TimResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('No')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('cabangLomba.nama')
                     ->searchable()
                     ->sortable()
@@ -52,7 +59,8 @@ class TimResource extends Resource
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
                     ->label('Nama Tim'),
-                Tables\Columns\TextColumn::make('instansi')
+                Tables\Columns\TextColumn::make('instansi.nama')
+                    ->label('Instansi')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
