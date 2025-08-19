@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\CabangLombaResource\Pages;
+namespace App\Filament\Resources\TimResource\Pages;
 
-use App\Filament\Resources\CabangLombaResource;
+use App\Filament\Resources\TimResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditCabangLomba extends EditRecord
+class EditTim extends EditRecord
 {
-    protected static string $resource = CabangLombaResource::class;
+    protected static string $resource = TimResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -19,6 +19,6 @@ class EditCabangLomba extends EditRecord
 
      protected function getRedirectUrl(): string
     {
-        return CabangLombaResource::getUrl('index');
+        return TimResource::getUrl('index');
     }
 }

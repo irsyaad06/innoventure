@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('webdev_progresses', function (Blueprint $table) {
+        Schema::create('webdev_progress', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tim_id')->constrained('tims')->onDelete('cascade');
             $table->boolean('web_app_uploaded')->default(false);
