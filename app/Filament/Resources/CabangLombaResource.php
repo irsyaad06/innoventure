@@ -17,7 +17,10 @@ class CabangLombaResource extends Resource
 {
     protected static ?string $model = CabangLomba::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+    protected static ?string $navigationGroup = 'Data Master';
+    protected static ?int $navigationSort = 0;
+
 
     public static function form(Form $form): Form
     {
@@ -26,12 +29,19 @@ class CabangLombaResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('jenis_penilaian')
-                    ->required(),
+                Forms\Components\Radio::make('jenis_penilaian')
+                    ->required()
+                    ->options([
+                        'vs' => 'VS',
+                        'juri' => 'Juri',
+                    ])
+                    ->inline(),
                 Forms\Components\DatePicker::make('tanggal_mulai')
-                    ->required(),
+                    ->required()
+                    ->native(false),
                 Forms\Components\DatePicker::make('tanggal_berakhir')
-                    ->required(),
+                    ->required()
+                    ->native(false),
             ]);
     }
 
@@ -41,7 +51,18 @@ class CabangLombaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('jenis_penilaian'),
+                Tables\Columns\TextColumn::make('jenis_penilaian')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'vs' => 'success',
+                        'juri' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'vs' => 'VS',
+                        'juri' => 'Juri',
+                        default => $state,
+                    }),
                 Tables\Columns\TextColumn::make('tanggal_mulai')
                     ->date()
                     ->sortable(),
