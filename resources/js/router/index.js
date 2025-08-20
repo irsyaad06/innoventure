@@ -4,6 +4,8 @@ import BerandaPage from "../pages/BerandaPage.vue";
 import MobileLegendPage from "../pages/MobileLegendPage.vue";
 import WebDevelopmentPage from "../pages/WebDevelopmentPage.vue";
 import Kompetisi from "../pages/Kompetisi.vue";
+import GameOn from "../pages/GameOnPage.vue"
+import Seminar from "../pages/SeminarPage.vue"
 
 const routes = [
     {
@@ -24,9 +26,20 @@ const routes = [
                 path: "/kompetisi/mobile-legend",
                 component: MobileLegendPage,
             },
+
             {
                 path: "/kompetisi/web-development",
                 component: WebDevelopmentPage,
+            },
+
+            {
+                path: "/game-on",
+                component: GameOn,
+            },
+
+            {
+                path: "/seminar",
+                component: Seminar,
             },
         ],
     },

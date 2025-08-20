@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10 pt-10">
+  <div class=" text-white">
     Semua Kompetisi
   </div>
 </template>
