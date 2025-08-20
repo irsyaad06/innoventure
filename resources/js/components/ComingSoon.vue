@@ -32,7 +32,7 @@
             </div>
 
             <!-- Main Content -->
-            <div class="text-center space-y-4">
+            <div class="text-center font-mokoto space-y-4">
                 <h1 class="text-5xl md:text-7xl font-bold glow-text h-23 md:h-20">
                     Coming Soon!
                 </h1>
@@ -284,8 +284,8 @@ export default {
 }
 
 .glow-text {
-    text-shadow: 0 0 3px rgba(0, 191, 255, 0.121), 0 0 6px rgba(0, 191, 255, 0.165),
-        0 0 9px rgba(148, 219, 255, 0.346);
+    text-shadow: 0 0 3px rgba(0, 191, 255, 0.121),
+        0 0 6px rgba(0, 191, 255, 0.165), 0 0 9px rgba(148, 219, 255, 0.346);
     background: linear-gradient(to right, #96d9ff, #2f6e91, #00aaff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
