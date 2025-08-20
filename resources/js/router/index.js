@@ -1,21 +1,33 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainLayout from "../layouts/MainLayout.vue";
 import BerandaPage from "../pages/BerandaPage.vue";
-// import CabangLombaPage from "../pages/CabangLombaPage.vue";
-// import TestTailwindPage from "../pages/TestTailwindPage.vue";
+import MobileLegendPage from "../pages/MobileLegendPage.vue";
+import WebDevelopmentPage from "../pages/WebDevelopmentPage.vue";
+import Kompetisi from "../pages/Kompetisi.vue";
 
 const routes = [
     {
         path: "/",
         component: MainLayout,
         children: [
-            { path: "beranda", component: BerandaPage },
-            // {
-            //     path: "/kompetisi/:slug",
-            //     component: CabangLombaPage,
-            //     props: true,
-            // },
-            // { path: "/test-tailwind", component: TestTailwindPage },
+            {
+                path: "/",
+                component: BerandaPage,
+            },
+
+            {
+                path: "/kompetisi",
+                component: Kompetisi,
+            },
+
+            {
+                path: "/kompetisi/mobile-legend",
+                component: MobileLegendPage,
+            },
+            {
+                path: "/kompetisi/web-development",
+                component: WebDevelopmentPage,
+            },
         ],
     },
 ];
