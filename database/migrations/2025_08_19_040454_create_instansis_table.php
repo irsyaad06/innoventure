@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('instansis', function (Blueprint $table) {
             $table->id();
             $table->string('nama'); // hanya nama instansi
+            $table->string('logo'); // hanya nama instansi
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WebDevController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CabangLombaController;
 use App\Http\Controllers\InstansiController;
@@ -24,4 +25,10 @@ Route::prefix('tim')->group(function () {
 Route::prefix('ml-match')->group(function () {
     Route::get('/', [MlMatchController::class, 'index']);
     Route::get('/{id}', [MlMatchController::class, 'show']);
+});
+
+
+Route::prefix('webdev-progress')->group(function () {
+    Route::get('/', [WebDevController::class, 'index']);
+    Route::get('/{id}', [WebDevController::class, 'show']);
 });

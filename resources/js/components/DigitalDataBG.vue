@@ -1,6 +1,6 @@
 <template>
     <!-- Digital Data Animation Background -->
-    <div class="digital-data-background absolute inset-0 z-0 h-screen">
+    <div class="digital-data-background fixed inset-0">
         <div
             v-for="i in 50"
             :key="i"
@@ -56,6 +56,7 @@ export default {
     animation-name: fly-up;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    animation-duration: 5s;
 }
 
 @keyframes fly-up {

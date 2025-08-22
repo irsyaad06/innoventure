@@ -6,10 +6,12 @@ use App\Filament\Resources\InstansiResource\Pages;
 use App\Filament\Resources\InstansiResource\RelationManagers;
 use App\Models\Instansi;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +33,8 @@ class InstansiResource extends Resource
                 TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
+                FileUpload::make('logo')
+                    ->required(),
             ]);
     }
 
@@ -40,6 +44,9 @@ class InstansiResource extends Resource
             ->columns([
                 TextColumn::make('No')
                     ->rowIndex(),
+                ImageColumn::make('logo')
+                    ->searchable()
+                    ->label('Logo Instansi'),
                 TextColumn::make('nama')
                     ->searchable()
                     ->label('Nama Instansi'),

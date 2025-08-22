@@ -3,7 +3,7 @@
         class="min-h-screen relative overflow-hidden flex items-center justify-center p-4 bg-gray-900"
     >
         <!-- Digital Data Animation Background -->
-        <div class="digital-data-background absolute inset-0 z-0">
+        <div class="digital-data-background fixed inset-0 z-0">
             <div
                 v-for="i in 50"
                 :key="i"

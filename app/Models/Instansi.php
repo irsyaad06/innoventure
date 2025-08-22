@@ -11,6 +11,7 @@ class Instansi extends Model
 
     protected $fillable = [
         'nama',
+        'logo',
     ];
 
     public function tims()
