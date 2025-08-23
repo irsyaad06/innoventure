@@ -7,6 +7,8 @@ use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\TimController;
 use App\Http\Controllers\MlMatchController;
 use App\Http\Controllers\SeminarController;
+use App\Http\Controllers\SponsorController;
+use App\Http\Controllers\MedpartController;
 
 
 Route::prefix('cabang-lomba')->group(function () {
@@ -37,4 +39,15 @@ Route::prefix('webdev-progress')->group(function () {
 
 Route::prefix('seminar')->group(function () {
     Route::get('/', [SeminarController::class, 'index']);
+});
+
+
+Route::prefix('sponsor')->group (function () {
+    Route::get('/', [SponsorController::class, 'getAllSponsorsByType']);
+    Route::get('/{id}', [SponsorController::class, 'getSponsorById']);
+});
+
+Route::prefix('medpart')->group (function () {
+    Route::get('/', [MedpartController::class, 'getAllMedpartByType']);
+    Route::get('/{id}', [MedpartController::class, 'getMedpartById']);
 });
