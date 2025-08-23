@@ -20,12 +20,12 @@ class Seminar extends Model
      * @var array
      */
     protected $fillable = [
-        'judul',
+        'nama',
+        'tema',
         'deskripsi',
         'tanggal',
-        'lokasi',
-        'juri_id',
-        'is_aktif',
+        'waktu',
+        'tempat',
     ];
 
     /**
