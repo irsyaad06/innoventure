@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class InstansiResource extends Resource
 {
     protected static ?string $model = Instansi::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationGroup = 'Data Master';
     protected static ?int $navigationSort = 1;

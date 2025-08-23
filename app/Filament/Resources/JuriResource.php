@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ExternalResource\Pages;
-use App\Filament\Resources\ExternalResource\RelationManagers;
-use App\Models\External;
+use App\Filament\Resources\JuriResource\Pages;
+use App\Filament\Resources\JuriResource\RelationManagers;
+use App\Models\Juri;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,17 +13,17 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ExternalResource extends Resource
+class JuriResource extends Resource
 {
-    protected static ?string $model = External::class;
+    protected static ?string $model = Juri::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-signal';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?string $navigationGroup = 'Data Master';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 4;
 
-    protected static ?string $pluralModelLabel = 'Medpart/Sponsor';
+    protected static ?string $pluralModelLabel = 'Juri';
 
     public static function form(Form $form): Form
     {
@@ -32,29 +32,25 @@ class ExternalResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('logo')
-                    ->image()
-                    ->directory('logos')
-                    ->maxSize(2048) // Maksimum 2MB
-                    ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->unique(External::class, 'email', ignoreRecord: true)
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('role')
+                    ->maxLength(255)
+                    ->nullable(),
+                Forms\Components\TextInput::make('instansi')
+                    ->maxLength(255)
+                    ->nullable(),
                 Forms\Components\TextInput::make('no_hp')
                     ->tel()
+                    ->maxLength(20)
+                    ->nullable(),
+                Forms\Components\TextInput::make('password')
+                    ->password()
                     ->required()
-                    ->maxLength(20),
+                    ->minLength(8)
+                    ->dehydrated(fn($state) => filled($state)) // Hanya simpan jika diisi
+                    ->dehydrateStateUsing(fn($state) => \Illuminate\Support\Facades\Hash::make($state)),
                 Forms\Components\Toggle::make('is_aktif')
                     ->label('Aktif')
                     ->default(false),
-                Forms\Components\Select::make('jenis')
-                    ->options([
-                        'medpart' => 'Media Partner',
-                        'sponsor' => 'Sponsor',
-                    ])
-                    ->nullable(),
             ]);
     }
 
@@ -65,36 +61,27 @@ class ExternalResource extends Resource
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('logo')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\TextColumn::make('role')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->default('-'),
+                Tables\Columns\TextColumn::make('instansi')
+                    ->searchable()
+                    ->sortable()
+                    ->default('-'),
                 Tables\Columns\TextColumn::make('no_hp')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->default('-'),
                 Tables\Columns\IconColumn::make('is_aktif')
                     ->boolean()
                     ->label('Aktif'),
-                Tables\Columns\TextColumn::make('jenis')
-                    ->formatStateUsing(fn(?string $state): string => match ($state) {
-                        'medpart' => 'Media Partner',
-                        'sponsor' => 'Sponsor',
-                        default => '-',
-                    })
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('jenis')
-                    ->options([
-                        'medapart' => 'Media Partner',
-                        'sponsor' => 'Sponsor',
-                    ])
-                    ->label('Jenis'),
                 Tables\Filters\TernaryFilter::make('is_aktif')
                     ->label('Status Aktif'),
             ])
@@ -119,9 +106,9 @@ class ExternalResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExternals::route('/'),
-            'create' => Pages\CreateExternal::route('/create'),
-            'edit' => Pages\EditExternal::route('/{record}/edit'),
+            'index' => Pages\ListJuris::route('/'),
+            'create' => Pages\CreateJuri::route('/create'),
+            'edit' => Pages\EditJuri::route('/{record}/edit'),
         ];
     }
 }
