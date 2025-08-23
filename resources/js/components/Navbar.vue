@@ -149,6 +149,17 @@
                             >Seminar</RouterLink
                         >
                     </li>
+                    <li>
+                        <RouterLink
+                            to="/submission"
+                            class="block py-2 px-3 rounded-sm md:p-0 md:hover:bg-transparent hover:text-sky-300 text-gray-400 hover:bg-gray-700"
+                            aria-current="page"
+                            :class="{
+                                'text-sky-300': route.path === '/submission',
+                            }"
+                            >Pengumpulan Web-Dev</RouterLink
+                        >
+                    </li>
                 </ul>
             </div>
         </div>

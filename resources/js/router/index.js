@@ -7,6 +7,7 @@ import Kompetisi from "../pages/Kompetisi.vue";
 import GameOn from "../pages/GameOnPage.vue"
 import Seminar from "../pages/SeminarPage.vue"
 import DaftarSeminar from "../pages/DaftarSeminar.vue"
+import SubmissionPage from "../pages/SubmissionPage.vue";
 
 const routes = [
     {
@@ -45,6 +46,10 @@ const routes = [
             {
                 path: "/seminar/daftar",
                 component: DaftarSeminar,
+            },
+            {
+                path: "/submission",
+                component: SubmissionPage,
             },
         ],
     },
