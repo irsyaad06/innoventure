@@ -17,7 +17,7 @@ class DaftarSeminarResource extends Resource
 {
     protected static ?string $model = DaftarSeminar::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
 
     protected static ?string $navigationGroup = 'Seminar';
 
