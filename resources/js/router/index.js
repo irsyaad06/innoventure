@@ -6,6 +6,7 @@ import WebDevelopmentPage from "../pages/WebDevelopmentPage.vue";
 import Kompetisi from "../pages/Kompetisi.vue";
 import GameOn from "../pages/GameOnPage.vue"
 import Seminar from "../pages/SeminarPage.vue"
+import DaftarSeminar from "../pages/DaftarSeminar.vue"
 
 const routes = [
     {
@@ -40,6 +41,10 @@ const routes = [
             {
                 path: "/seminar",
                 component: Seminar,
+            },
+            {
+                path: "/seminar/daftar",
+                component: DaftarSeminar,
             },
         ],
     },
