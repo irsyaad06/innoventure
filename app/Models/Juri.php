@@ -24,6 +24,8 @@ class Juri extends Model
         'role',
         'instansi',
         'no_hp',
+        'is_aktif',
+        'email',
         'password',
     ];
 

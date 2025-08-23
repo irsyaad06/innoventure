@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('role')->nullable();
             $table->string('instansi')->nullable();
             $table->string('no_hp', 20)->nullable();
+            $table->boolean('is_aktif')->default(false);
+            $table->string('email');
             $table->string('password');
             $table->timestamps();
         });

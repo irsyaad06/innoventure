@@ -42,6 +42,9 @@ class JuriResource extends Resource
                     ->tel()
                     ->maxLength(20)
                     ->nullable(),
+                Forms\Components\TextInput::make('email')
+                    ->maxLength(255)
+                    ->nullable(),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
@@ -73,8 +76,7 @@ class JuriResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->default('-'),
-                Tables\Columns\IconColumn::make('is_aktif')
-                    ->boolean()
+                Tables\Columns\ToggleColumn::make('is_aktif')
                     ->label('Aktif'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

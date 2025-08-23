@@ -16,4 +16,9 @@ class EditJuri extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return JuriResource::getUrl('index');
+    }
 }
