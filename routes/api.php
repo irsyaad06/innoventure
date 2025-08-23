@@ -6,6 +6,8 @@ use App\Http\Controllers\CabangLombaController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\TimController;
 use App\Http\Controllers\MlMatchController;
+use App\Http\Controllers\SeminarController;
+
 
 Route::prefix('cabang-lomba')->group(function () {
     Route::get('/', [CabangLombaController::class, 'index']);
@@ -31,4 +33,8 @@ Route::prefix('ml-match')->group(function () {
 Route::prefix('webdev-progress')->group(function () {
     Route::get('/', [WebDevController::class, 'index']);
     Route::get('/{id}', [WebDevController::class, 'show']);
+});
+
+Route::prefix('seminar')->group(function () {
+    Route::get('/', [SeminarController::class, 'index']);
 });
