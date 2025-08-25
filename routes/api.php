@@ -9,6 +9,8 @@ use App\Http\Controllers\MlMatchController;
 use App\Http\Controllers\SeminarController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MedpartController;
+use App\Http\Controllers\DaftarSeminar;
+
 
 
 Route::prefix('cabang-lomba')->group(function () {
@@ -51,3 +53,8 @@ Route::prefix('medpart')->group (function () {
     Route::get('/', [MedpartController::class, 'getAllMedpartByType']);
     Route::get('/{id}', [MedpartController::class, 'getMedpartById']);
 });
+
+Route::prefix('daftarseminar')->group (function () {
+    Route::post('/', [DaftarSeminar::class, 'createDaftarSeminar']);
+});
+
