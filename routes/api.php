@@ -11,6 +11,7 @@ use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MedpartController;
 use App\Http\Controllers\DaftarSeminar;
 use App\Http\Controllers\AspekPenilaianController;
+use App\Http\Controllers\PenilaianController;
 
 
 
@@ -64,4 +65,10 @@ Route::prefix('daftarseminar')->group(function () {
 
 Route::prefix('aspek-penilaian')->group(function () {
     Route::get('/cabang/{id}', [AspekPenilaianController::class, 'aspekPenilaianByCabangLomba']);
+});
+
+Route::prefix('penilaian')->group(function () {
+    Route::post('/', [PenilaianController::class, 'store']);
+        Route::get('/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
+
 });

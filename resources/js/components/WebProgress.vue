@@ -1,6 +1,7 @@
-<template>
+`<template>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
-        <div
+        
+        <!-- <div
             class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4"
         >
             <label for="table-search" class="sr-only">Search</label>
@@ -31,7 +32,7 @@
                     placeholder="Cari Tim Kamu !"
                 />
             </div>
-        </div>
+        </div> -->
         <table
             class="w-full text-sm text-left rtl:text-right text-text-gray-400"
         >
@@ -43,7 +44,7 @@
                     <th scope="col" class="px-6 py-3">Nama Tim</th>
                     <!-- <th scope="col" class="px-6 py-3">Website</th> -->
                     <!-- <th scope="col" class="px-6 py-3">PPT</th> -->
-                    <th scope="col" class="px-6 py-3 text-amber-300">Poin</th>
+                    <th scope="col" class="px-6 py-3 text-amber-300">Skor</th>
                     <th scope="col" class="px-6 py-3">Action</th>
                 </tr>
             </thead>
@@ -112,7 +113,7 @@
                     </td> -->
                     <td class="px-6 py-4">
                         <div class="flex items-center">
-                            <div class="text-gray-200">90</div>
+                            <div class="text-gray-200">{{progress.total_skor}}</div>
                         </div>
                     </td>
                     <td class="px-6 py-4">
@@ -148,9 +149,11 @@
 import { onMounted } from "vue";
 import { useWebdevProgressStore } from "../stores/webdevProgress"; // Sesuaikan path ini
 
+
 const progressStore = useWebdevProgressStore();
 
 onMounted(() => {
     progressStore.fetchAll();
 });
 </script>
+`

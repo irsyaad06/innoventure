@@ -10,14 +10,17 @@ class WebDevController extends Controller
 
     public function index()
     {
-        // Mengambil semua data dari model WebdevProgress, dengan relasi tim dan instansi
-        $progress = WebdevProgress::with('tim.instansi')->get();
+        // 1. Eager load relasi yang dibutuhkan untuk performa optimal
+        $progresses = WebdevProgress::with(['tim.instansi', 'penilaians.aspekPenilaian'])->get();
 
-        // Mengembalikan data dalam format JSON
+        // 2. Urutkan koleksi berdasarkan 'total_skor' dari yang tertinggi ke terendah
+        //    Accessor 'total_skor' dari model akan otomatis terpanggil di sini
+        $sortedProgresses = $progresses->sortByDesc('total_skor')->values()->all();
+
         return response()->json([
             'code' => 200,
             'message' => 'success',
-            'payload' => $progress
+            'payload' => $sortedProgresses
         ]);
     }
 
@@ -77,6 +80,4 @@ class WebDevController extends Controller
             'payload' => $progress->load('tim.instansi')
         ], 201);
     }
-
-    
 }
