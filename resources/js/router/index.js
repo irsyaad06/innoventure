@@ -9,6 +9,7 @@ import Seminar from "../pages/SeminarPage.vue";
 import DaftarSeminar from "../pages/DaftarSeminar.vue";
 import SubmissionPage from "../pages/SubmissionPage.vue";
 import StatusUndianPage from "../pages/StatusUndianPage.vue";
+import DaftarLomba from "../pages/DaftarLomba.vue";
 
 const routes = [
     {
@@ -56,6 +57,10 @@ const routes = [
             {
                 path: "/submission",
                 component: SubmissionPage,
+            },
+            {
+                path: "/daftar",
+                component: DaftarLomba,
             },
         ],
     },
