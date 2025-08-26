@@ -10,6 +10,7 @@ use App\Http\Controllers\SeminarController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MedpartController;
 use App\Http\Controllers\DaftarSeminar;
+use App\Http\Controllers\AspekPenilaianController;
 
 
 
@@ -59,4 +60,8 @@ Route::prefix('daftarseminar')->group(function () {
     Route::get('/', [DaftarSeminar::class, 'index']);
     Route::get('/{kode_absen}', [DaftarSeminar::class, 'showByAbsen']);
     Route::post('/', [DaftarSeminar::class, 'createDaftarSeminar']);
+});
+
+Route::prefix('aspek-penilaian')->group(function () {
+    Route::get('/cabang/{id}', [AspekPenilaianController::class, 'aspekPenilaianByCabangLomba']);
 });

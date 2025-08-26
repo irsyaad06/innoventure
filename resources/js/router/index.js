@@ -10,6 +10,7 @@ import DaftarSeminar from "../pages/DaftarSeminar.vue";
 import SubmissionPage from "../pages/SubmissionPage.vue";
 import StatusUndianPage from "../pages/StatusUndianPage.vue";
 import DaftarLomba from "../pages/DaftarLomba.vue";
+import DetailWebDev from "../pages/DetailWebDev.vue";
 
 const routes = [
     {
@@ -39,6 +40,11 @@ const routes = [
             {
                 path: "/game-on",
                 component: GameOn,
+            },
+
+            {
+                path: "/detail-web/:id",
+                component: DetailWebDev,
             },
 
             {
