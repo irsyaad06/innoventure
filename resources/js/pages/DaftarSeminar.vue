@@ -1,27 +1,28 @@
 <template>
     <div
-        class="min-h-screen bg-transparent md:bg-gray-900 text-white flex flex-col items-center justify-center p-0 md:p-6 mt-15"
+        class="min-h-screen bg-transparent md:bg-gray-900 text-white flex flex-col items-center justify-center p-0 md:p-6 mt-30 md:mt-20"
     >
         <div
             class="w-full max-w-5xl bg-transparent md:bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl md:border border-white/10 p-0 md:p-6 sm:p-10 space-y-8"
         >
-            <div class="text-center">
+            <div class="text-center" v-if="seminarDetails">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
-                    Seminar Innoventure 2025
+                    {{ seminarDetails.nama }}
                 </h1>
                 <p
                     class="text-gray-300 max-w-3xl mx-auto leading-relaxed text-sm sm:text-base"
                 >
-                    Bergabunglah dalam seminar yang akan membuka wawasan dan
-                    menginspirasi Anda!
+                    {{ seminarDetails.deskripsi }}
                     <br /><br />
                     Kami mengundang Anda untuk ikut serta dalam
-                    <span class="font-semibold text-cyan-400"
-                        >Seminar INNOVENTURE</span
+                    <span class="font-semibold text-cyan-400">{{
+                        seminarDetails.nama
+                    }}</span
                     >, sebuah acara yang dirancang khusus untuk memberikan
                     pengetahuan mendalam dan wawasan terbaru tentang
-                    <span class="italic text-cyan-400"
-                        >Web Dev dimasa depan</span
+                    <span class="italic text-cyan-400">{{
+                        seminarDetails.tema
+                    }}</span
                     >. Jangan lewatkan kesempatan untuk belajar langsung dari
                     para ahli dan praktisi berpengalaman di bidangnya.
                 </p>
@@ -218,6 +219,35 @@
     >
         Daftar Sekarang
     </button>
+
+    <div
+        v-if="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+    >
+        <div
+            class="bg-gray-800 rounded-lg p-6 shadow-2xl max-w-sm mx-auto transform transition-all sm:my-8 sm:w-full border-t-4 border-red-500"
+        >
+            <div class="text-center">
+                <h3 class="text-lg leading-6 font-medium text-red-400">
+                    Pendaftaran Gagal
+                </h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-300">
+                        {{ modalMessage }}
+                    </p>
+                </div>
+            </div>
+            <div class="mt-5 flex justify-center">
+                <button
+                    @click="showModal = false"
+                    type="button"
+                    class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                >
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -233,7 +263,9 @@ export default {
                 email: "",
                 no_hp: "",
             },
-            showButton: false, // Tambahkan properti untuk mengontrol visibilitas tombol
+            showButton: false,
+            showModal: false,
+            modalMessage: "",
         };
     },
     mounted() {
@@ -286,28 +318,42 @@ export default {
             const [hours, minutes] = timePart.split(":");
             return `${hours.substring(0, 2)}.${minutes} WIB`;
         },
+        // Ganti seluruh method handleSubmit Anda dengan ini
         async handleSubmit() {
-            const seminarStore = useSeminarStore();
-            const result = await seminarStore.postSeminar({
-                nama: this.form.nama,
-                instansi: this.form.instansi,
-                email: this.form.email,
-                no_hp: this.form.no_hp,
-            });
+            try {
+                const seminarStore = useSeminarStore();
+                // Coba untuk mendaftarkan seminar
+                const result = await seminarStore.postSeminar({
+                    nama: this.form.nama,
+                    instansi: this.form.instansi,
+                    email: this.form.email,
+                    no_hp: this.form.no_hp,
+                });
 
-            if (result) {
-                alert(
-                    "Pendaftaran berhasil! No Undian: " +
-                        result.payload.no_undian
-                );
-                this.form = {
-                    nama: "",
-                    instansi: "",
-                    email: "",
-                    no_hp: "",
-                };
-            } else {
-                alert("Pendaftaran gagal: " + seminarStore.submissionError);
+                // Jika pendaftaran berhasil (result memiliki payload)
+                if (result && result.payload) {
+                    const kodeAbsen = result.payload.kode_absen;
+
+                    // Reset form
+                    this.form = {
+                        nama: "",
+                        instansi: "",
+                        email: "",
+                        no_hp: "",
+                    };
+
+                    // Langsung arahkan (redirect) ke halaman status
+                    this.$router.push(`/seminar/${kodeAbsen}`);
+                }
+            } catch (error) {
+                // Jika terjadi error (ditangkap dari action store)
+                const seminarStore = useSeminarStore();
+
+                // Siapkan dan tampilkan modal error
+                this.modalMessage =
+                    seminarStore.submissionError ||
+                    "Terjadi kesalahan yang tidak diketahui.";
+                this.showModal = true;
             }
         },
         // Fungsi untuk menggulir halaman ke form pendaftaran

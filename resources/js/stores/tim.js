@@ -19,5 +19,21 @@ export const useTimStore = defineStore("tim", {
                 this.loading = false;
             }
         },
+
+        async fetchOne(id) {
+            this.loading = true;
+            this.error = null;
+            this.progressDetail = null;
+            try {
+                const res = await api.get(`/tim/${id}`);
+                this.progressDetail = res.data.payload;
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    "Gagal mengambil detail tim.";
+            } finally {
+                this.loading = false;
+            }
+        },
     },
 });

@@ -41,8 +41,8 @@
                 <tr>
                     <th scope="col" class="px-6 py-3">Rank</th>
                     <th scope="col" class="px-6 py-3">Nama Tim</th>
-                    <th scope="col" class="px-6 py-3">Website</th>
-                    <th scope="col" class="px-6 py-3">PPT</th>
+                    <!-- <th scope="col" class="px-6 py-3">Website</th> -->
+                    <!-- <th scope="col" class="px-6 py-3">PPT</th> -->
                     <th scope="col" class="px-6 py-3 text-amber-300">Poin</th>
                     <th scope="col" class="px-6 py-3">Action</th>
                 </tr>
@@ -84,7 +84,7 @@
                         </div>
                     </th>
 
-                    <td class="px-6 py-4">
+                    <!-- <td class="px-6 py-4">
                         <div class="flex items-center">
                             <div
                                 :class="{
@@ -97,8 +97,8 @@
                                 progress.web_app_uploaded ? "Online" : "Offline"
                             }}
                         </div>
-                    </td>
-                    <td class="px-6 py-4">
+                    </td> -->
+                    <!-- <td class="px-6 py-4">
                         <div class="flex items-center">
                             <div
                                 :class="{
@@ -109,7 +109,7 @@
                                 {{ progress.ppt_uploaded ? "200" : "404" }}
                             </div>
                         </div>
-                    </td>
+                    </td> -->
                     <td class="px-6 py-4">
                         <div class="flex items-center">
                             <div class="text-gray-200">90</div>

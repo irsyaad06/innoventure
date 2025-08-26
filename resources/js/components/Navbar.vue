@@ -19,7 +19,7 @@
             >
                 <RouterLink
                     to="/daftar"
-                    class="text-white bg-gradient-to-bl from-sky-300 via-sky-500 to-sky-600 hover:bg-gradient-to-tr font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 cursor-pointer"
+                    class="text-white hidden md:flex bg-gradient-to-bl from-sky-300 via-sky-500 to-sky-600 hover:bg-gradient-to-tr font-medium rounded-lg text-xs md:text-sm px-5 py-2.5 text-center me-2 mb-2 cursor-pointer"
                 >
                     Daftar Lomba
                 </RouterLink>
@@ -149,7 +149,7 @@
                             >Seminar</RouterLink
                         >
                     </li>
-                    <li>
+                    <!-- <li>
                         <RouterLink
                             to="/submission"
                             class="block py-2 px-3 rounded-sm md:p-0 md:hover:bg-transparent hover:text-sky-300 text-gray-400 hover:bg-gray-700"
@@ -159,7 +159,7 @@
                             }"
                             >Pengumpulan Web-Dev</RouterLink
                         >
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>

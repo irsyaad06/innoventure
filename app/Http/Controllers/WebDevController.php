@@ -44,5 +44,39 @@ class WebDevController extends Controller
         ]);
     }
 
-    // Anda bisa menambahkan method lain seperti store, update, destroy di sini
+    public function store(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'tim_id'          => 'required|exists:tims,id',
+            'email_ketua'     => 'required|email|unique:webdev_progress,email_ketua',
+            'judul_proyek'    => 'required|string|max:255',
+            'deskripsi_pdf'   => 'required',
+            'link_repository' => 'nullable|url',
+            'link_demo'       => 'nullable|url',
+            'link_hosting'    => 'nullable|url',
+            'ppt'             => 'nullable',
+        ]);
+
+        // Upload PDF
+        if ($request->hasFile('deskripsi_pdf')) {
+            $validated['deskripsi_pdf'] = $request->file('deskripsi_pdf')->store('deskripsi_pdf', 'public');
+        }
+
+        // Upload PPT jika ada
+        if ($request->hasFile('ppt')) {
+            $validated['ppt'] = $request->file('ppt')->store('ppt', 'public');
+        }
+
+        // Simpan ke DB
+        $progress = WebdevProgress::create($validated);
+
+        return response()->json([
+            'code' => 201,
+            'message' => 'Data berhasil disimpan',
+            'payload' => $progress->load('tim.instansi')
+        ], 201);
+    }
+
+    
 }

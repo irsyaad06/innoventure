@@ -6,88 +6,121 @@ export const useSeminarStore = defineStore("seminar", {
         seminars: [],
         isLoading: false,
         error: null,
-        isSubmitting: false, // Tambahkan state untuk status pengiriman data
-        submissionError: null, // Tambahkan state untuk error pengiriman data
-        submissionData: null, // Tambahkan state untuk data hasil pengiriman
+        isSubmitting: false,
+        submissionError: null,
+        submissionData: null,
+        // STATE BARU: Untuk menyimpan data pendaftar seminar
+        pendaftar: [],
+        pendaftarDetail: null,
     }),
 
     actions: {
         async fetchSeminars() {
-            // Set status loading menjadi true
             this.isLoading = true;
-            // Reset error
             this.error = null;
-
             try {
-                // Lakukan panggilan API menggunakan instance axios
                 const response = await api.get("/seminar");
-
-                // Periksa apakah respons berhasil dan memiliki payload
                 if (response.data.code === 200 && response.data.payload) {
                     this.seminars = response.data.payload;
                 } else {
-                    // Tangani kasus di mana API mengembalikan kode sukses, tetapi tidak ada data
-                    this.error = "Data seminar tidak ditemukan.";
+                    this.error = "Data seminar tno_undianak ditemukan.";
                     this.seminars = [];
                 }
             } catch (err) {
-                // Tangani kesalahan jaringan atau server
                 console.error("Failed to fetch seminars:", err);
                 if (err.response) {
-                    // Kesalahan dari respons server (misal: 404, 500)
                     this.error =
                         err.response.data.message ||
                         "Terjadi kesalahan pada server.";
                 } else {
-                    // Kesalahan non-server (misal: jaringan mati)
                     this.error =
                         "Gagal terhubung ke server. Periksa koneksi internet Anda.";
                 }
                 this.seminars = [];
             } finally {
-                // Selalu set status loading menjadi false, terlepas dari keberhasilan atau kegagalan
                 this.isLoading = false;
             }
         },
 
         async postSeminar(seminarData) {
-            // Set status pengiriman menjadi true
             this.isSubmitting = true;
-            // Reset error dan data pengiriman
             this.submissionError = null;
             this.submissionData = null;
-
             try {
-                // Lakukan panggilan API POST
                 const response = await api.post("/daftarseminar", seminarData);
-
-                // Periksa respons dari server
                 if (response.data.code === 201) {
-                    // Jika berhasil, simpan data payload
                     this.submissionData = response.data.payload;
                     return response.data;
                 } else {
-                    // Tangani jika ada kode respons yang tidak diharapkan
                     this.submissionError =
                         response.data.message || "Pendaftaran gagal.";
-                    return null;
+                    throw new Error(this.submissionError);
                 }
             } catch (err) {
-                console.error("Failed to submit seminar registration:", err);
+                // console.log(
+                //     "ISI LENGKAP ERROR DARI SERVER:",
+                //     err.response.data
+                // );
+
+                // --- 👇 BAGIAN INI YANG DIPERBARUI ---
                 if (err.response && err.response.data) {
-                    // Log the specific validation errors from the server
-                    console.error(
-                        "Validation Errors:",
-                        err.response.data.errors
-                    );
-                    this.submissionError =
-                        err.response.data.message || "Pendaftaran gagal.";
+                    // Cek apakah ada error validasi spesifik untuk 'email'
+                    if (
+                        err.response.data.errors &&
+                        err.response.data.errors.email
+                    ) {
+                        // Jika ada, gunakan pesan custom Anda
+                        this.submissionError =
+                            "Email sudah terdaftar. Silakan gunakan email lain.";
+                    } else {
+                        // Jika tidak, gunakan pesan error umum dari server
+                        this.submissionError =
+                            err.response.data.message || "Pendaftaran gagal.";
+                    }
                 } else {
+                    // Untuk error jaringan atau lainnya
                     this.submissionError = "Gagal terhubung ke server.";
                 }
+
+                // Tetap lemparkan error agar bisa ditangkap oleh komponen
+                throw new Error(this.submissionError);
+                // --- 👆 AKHIR BAGIAN YANG DIPERBARUI ---
             } finally {
-                // Selalu set status pengiriman menjadi false
                 this.isSubmitting = false;
+            }
+        },
+
+        // --- ACTION YANG DIPERBAIKI ---
+        async allDaftarSeminar() {
+            this.isLoading = true; // Menggunakan isLoading
+            this.error = null;
+            try {
+                const res = await api.get("/daftarseminar");
+                // Menyimpan ke state 'pendaftar'
+                this.pendaftar = res.data.payload;
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    "Gagal mengambil daftar pendaftar."; // Pesan error diperbaiki
+            } finally {
+                this.isLoading = false; // Menggunakan isLoading
+            }
+        },
+
+        async fetchPendaftarByKode(no_undian) {
+            this.isLoading = true;
+            this.error = null;
+            this.pendaftarDetail = null;
+            try {
+                // Endpoint diasumsikan bisa menerima kode undian
+                const res = await api.get(`/daftarseminar/${no_undian}`);
+                this.pendaftarDetail = res.data.payload;
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    `Gagal mengambil data untuk kode undian ${no_undian}.`;
+            } finally {
+                this.isLoading = false;
             }
         },
     },

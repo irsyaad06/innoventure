@@ -51,7 +51,6 @@ class DaftarSeminar extends Controller
                     'kode_absen' => $dseminar->kode_absen,
                 ]
             ], 201);
-
         } catch (ValidationException $e) {
             // Tangani kegagalan validasi (misal: email sudah terdaftar)
             return response()->json([
@@ -59,7 +58,6 @@ class DaftarSeminar extends Controller
                 'message' => 'Validasi Gagal',
                 'errors'  => $e->errors()
             ], 422);
-
         } catch (Exception $e) {
             // Tangani kesalahan server umum (misal: gagal koneksi database)
             Log::error('Gagal membuat data seminar: ' . $e->getMessage());
@@ -69,4 +67,33 @@ class DaftarSeminar extends Controller
             ], 500);
         }
     }
+
+    public function index()
+    {
+        return response()->json([
+            'code' => 200,
+            'message' => 'success',
+            'payload' => \App\Models\DaftarSeminar::all()
+        ]);
+    }
+
+    public function showByAbsen($kode_absen) // Ganti parameter menjadi $kode_absen
+{
+    // Cari pendaftar berdasarkan kolom 'kode_absen'
+    $data = \App\Models\DaftarSeminar::where('kode_absen', $kode_absen)->first();
+
+    if (!$data) {
+        return response()->json([
+            'code' => 404,
+            'message' => 'Data pendaftar dengan kode tersebut tidak ditemukan.',
+            'payload' => null
+        ], 404);
+    }
+
+    return response()->json([
+        'code' => 200,
+        'message' => 'success',
+        'payload' => $data
+    ]);
+}
 }

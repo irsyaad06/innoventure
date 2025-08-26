@@ -34,7 +34,7 @@
             <!-- Main Content -->
             <div class="text-center font-mokoto space-y-4">
                 <h1 class="text-5xl md:text-7xl font-bold glow-text h-23 md:h-20">
-                    Coming Soon!
+                    Its Over. See you next batch!
                 </h1>
 
                 <!-- <p class="text-xl md:text-xl text-gray-300 max-w-2xl mx-auto">

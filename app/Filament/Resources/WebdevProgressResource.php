@@ -11,7 +11,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 
 class WebdevProgressResource extends Resource
 {
@@ -37,13 +42,54 @@ class WebdevProgressResource extends Resource
                     ->searchable()
                     ->required(),
 
-                Forms\Components\Toggle::make('web_app_uploaded')
-                    ->label('Upload Web App')
-                    ->inline(false),
+                TextInput::make('email_ketua')
+                    ->label('Email Ketua')
+                    ->email()
+                    ->required()
+                    ->unique(ignoreRecord: true),
 
-                Forms\Components\Toggle::make('ppt_uploaded')
-                    ->label('Upload PPT')
-                    ->inline(false),
+                TextInput::make('judul_proyek')
+                    ->label('Judul Proyek')
+                    ->required()
+                    ->maxLength(255),
+
+                FileUpload::make('deskripsi_pdf')
+                    ->label('Deskripsi Proyek (PDF)')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->maxSize(5120) // 5MB
+                    ->directory('webdev/deskripsi')
+                    ->downloadable()
+                    ->openable()
+                    ->required(),
+
+                TextInput::make('link_repository')
+                    ->label('Link Repository (GitHub/Drive)')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://github.com/username/repository'),
+
+                TextInput::make('link_demo')
+                    ->label('Link Demo (YouTube/Drive)')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://youtube.com/watch?v=...'),
+
+                TextInput::make('link_hosting')
+                    ->label('Link Hosting')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://yourwebsite.com'),
+
+                FileUpload::make('ppt')
+                    ->label('File Presentasi (PPT/PPTX)')
+                    ->acceptedFileTypes([
+                        'application/vnd.ms-powerpoint',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+                    ])
+                    ->maxSize(5120) // 5MB
+                    ->directory('webdev/presentasi')
+                    ->downloadable()
+                    ->openable(),
             ]);
     }
 
@@ -51,48 +97,96 @@ class WebdevProgressResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tim.nama')
+                TextColumn::make('tim.nama')
                     ->label('Nama Tim')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('tim.instansi.nama')
+                TextColumn::make('tim.instansi.nama')
                     ->label('Instansi')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('web_app_uploaded')
-                    ->label('Web App')
-                    ->boolean() // otomatis cek true/false
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->colors([
-                        'success' => true,  // hijau kalau true
-                        'danger' => false,  // merah kalau false
-                    ])
-                    ->action(fn($record) => $record->update([
-                        'web_app_uploaded' => ! $record->web_app_uploaded,
-                    ])),
+                TextColumn::make('email_ketua')
+                    ->label('Email Ketua')
+                    ->searchable()
+                    ->sortable(),
 
-                Tables\Columns\IconColumn::make('ppt_uploaded')
-                    ->label('PPT')
-                    ->boolean() // otomatis cek true/false
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
+                TextColumn::make('judul_proyek')
+                    ->label('Judul Proyek')
+                    ->searchable()
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        return strlen($state) > 50 ? $state : null;
+                    }),
+
+                IconColumn::make('deskripsi_pdf')
+                    ->label('PDF')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-document-text')
+                    ->falseIcon('heroicon-o-x-mark')
                     ->colors([
-                        'success' => true,  // hijau kalau true
-                        'danger' => false,  // merah kalau false
+                        'success' => true,
+                        'danger' => false,
                     ])
-                    ->action(fn($record) => $record->update([
-                        'ppt_uploaded' => ! $record->ppt_uploaded,
-                    ])),
+                    ->url(fn ($record) => $record->deskripsi_pdf ? Storage::url($record->deskripsi_pdf) : null)
+                    ->openUrlInNewTab(),
+
+                IconColumn::make('link_repository')
+                    ->label('Repo')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-link')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->colors([
+                        'success' => true,
+                        'danger' => false,
+                    ])
+                    ->url(fn ($record) => $record->link_repository)
+                    ->openUrlInNewTab(),
+
+                IconColumn::make('link_demo')
+                    ->label('Demo')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-play-circle')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->colors([
+                        'success' => true,
+                        'danger' => false,
+                    ])
+                    ->url(fn ($record) => $record->link_demo)
+                    ->openUrlInNewTab(),
+
+                IconColumn::make('link_hosting')
+                    ->label('Hosting')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-globe-alt')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->colors([
+                        'success' => true,
+                        'danger' => false,
+                    ])
+                    ->url(fn ($record) => $record->link_hosting)
+                    ->openUrlInNewTab(),
+
+                IconColumn::make('ppt')
+                    ->label('PPT')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-presentation-chart-line')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->colors([
+                        'success' => true,
+                        'danger' => false,
+                    ])
+                    ->url(fn ($record) => $record->ppt ? Storage::url($record->ppt) : null)
+                    ->openUrlInNewTab(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -4,10 +4,11 @@ import BerandaPage from "../pages/BerandaPage.vue";
 import MobileLegendPage from "../pages/MobileLegendPage.vue";
 import WebDevelopmentPage from "../pages/WebDevelopmentPage.vue";
 import Kompetisi from "../pages/Kompetisi.vue";
-import GameOn from "../pages/GameOnPage.vue"
-import Seminar from "../pages/SeminarPage.vue"
-import DaftarSeminar from "../pages/DaftarSeminar.vue"
+import GameOn from "../pages/GameOnPage.vue";
+import Seminar from "../pages/SeminarPage.vue";
+import DaftarSeminar from "../pages/DaftarSeminar.vue";
 import SubmissionPage from "../pages/SubmissionPage.vue";
+import StatusUndianPage from "../pages/StatusUndianPage.vue";
 
 const routes = [
     {
@@ -46,6 +47,11 @@ const routes = [
             {
                 path: "/seminar/daftar",
                 component: DaftarSeminar,
+            },
+            {
+                path: "/seminar/:kode_absen",
+                name: "StatusUndian",
+                component: StatusUndianPage,
             },
             {
                 path: "/submission",

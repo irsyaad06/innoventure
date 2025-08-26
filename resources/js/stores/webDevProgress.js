@@ -39,5 +39,33 @@ export const useWebdevProgressStore = defineStore("webdevProgress", {
                 this.loading = false;
             }
         },
+
+        async createProgress(formData) {
+            this.loading = true;
+            this.error = null;
+            try {
+                // formData bisa JSON biasa, atau FormData kalau ada upload file
+                const res = await api.post("/webdev-progress", formData, {
+                    headers: {
+                        "Content-Type":
+                            formData instanceof FormData
+                                ? "multipart/form-data"
+                                : "application/json",
+                    },
+                });
+
+                // Tambahkan hasil create ke state
+                this.progresses.push(res.data.payload);
+
+                return res.data;
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    "Gagal menambahkan progress.";
+                throw err;
+            } finally {
+                this.loading = false;
+            }
+        },
     },
 });

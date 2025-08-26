@@ -37,6 +37,7 @@ Route::prefix('ml-match')->group(function () {
 Route::prefix('webdev-progress')->group(function () {
     Route::get('/', [WebDevController::class, 'index']);
     Route::get('/{id}', [WebDevController::class, 'show']);
+    Route::post('/', [WebDevController::class, 'store']);
 });
 
 Route::prefix('seminar')->group(function () {
@@ -44,17 +45,18 @@ Route::prefix('seminar')->group(function () {
 });
 
 
-Route::prefix('sponsor')->group (function () {
+Route::prefix('sponsor')->group(function () {
     Route::get('/', [SponsorController::class, 'getAllSponsorsByType']);
     Route::get('/{id}', [SponsorController::class, 'getSponsorById']);
 });
 
-Route::prefix('medpart')->group (function () {
+Route::prefix('medpart')->group(function () {
     Route::get('/', [MedpartController::class, 'getAllMedpartByType']);
     Route::get('/{id}', [MedpartController::class, 'getMedpartById']);
 });
 
-Route::prefix('daftarseminar')->group (function () {
+Route::prefix('daftarseminar')->group(function () {
+    Route::get('/', [DaftarSeminar::class, 'index']);
+    Route::get('/{kode_absen}', [DaftarSeminar::class, 'showByAbsen']);
     Route::post('/', [DaftarSeminar::class, 'createDaftarSeminar']);
 });
-

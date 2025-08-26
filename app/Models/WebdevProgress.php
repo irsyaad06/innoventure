@@ -11,8 +11,13 @@ class WebdevProgress extends Model
 
     protected $fillable = [
         'tim_id',
-        'web_app_uploaded',
-        'ppt_uploaded'
+        'email_ketua',
+        'judul_proyek',
+        'deskripsi_pdf',
+        'link_repository',
+        'link_demo',
+        'link_hosting',
+        'ppt',
     ];
 
     public function tim()
