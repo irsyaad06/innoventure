@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'juri' => [
+            'driver' => 'session',
+            'provider' => 'juris', // Menggunakan provider 'juris'
+        ],
     ],
 
     /*
@@ -63,6 +68,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'juris' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Juri::class, // Arahkan ke model Juri Anda
         ],
 
         // 'users' => [

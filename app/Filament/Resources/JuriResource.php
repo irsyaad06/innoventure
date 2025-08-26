@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class JuriResource extends Resource
 {
@@ -33,27 +34,34 @@ class JuriResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('role')
-                    ->maxLength(255)
-                    ->nullable(),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('instansi')
-                    ->maxLength(255)
-                    ->nullable(),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('no_hp')
                     ->tel()
-                    ->maxLength(20)
-                    ->nullable(),
+                    ->maxLength(20),
                 Forms\Components\TextInput::make('email')
-                    ->maxLength(255)
-                    ->nullable(),
+                    ->email()
+                    ->required()
+                    ->unique(ignoreRecord: true), // 'ignoreRecord' penting untuk form edit
+
+                // 👇 INI BAGIAN UTAMA YANG DIPERBAIKI
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
+                    ->required(fn(string $context): bool => $context === 'create')
                     ->minLength(8)
-                    ->dehydrated(fn($state) => filled($state)) // Hanya simpan jika diisi
-                    ->dehydrateStateUsing(fn($state) => \Illuminate\Support\Facades\Hash::make($state)),
+                    ->confirmed()
+                    ->dehydrated(fn($state) => filled($state)),
+
+                // Field tambahan untuk konfirmasi password
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->dehydrated(false)
+                    ->label('Konfirmasi Password'),
+
                 Forms\Components\Toggle::make('is_aktif')
                     ->label('Aktif')
-                    ->default(false),
+                    ->default(true),
             ]);
     }
 

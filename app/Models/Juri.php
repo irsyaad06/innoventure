@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+// 1. Impor contract dan trait yang dibutuhkan
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait; // Trait untuk implementasi
 
-class Juri extends Model
+// 2. Terapkan 'implements Authenticatable'
+class Juri extends Model implements Authenticatable
 {
+    // 3. Gunakan trait di dalam kelas
+    use AuthenticatableTrait;
+
     /**
      * The table associated with the model.
      *
@@ -58,4 +65,5 @@ class Juri extends Model
     {
         $this->attributes['password'] = Hash::make($value);
     }
+    
 }

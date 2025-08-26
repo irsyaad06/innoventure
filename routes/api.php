@@ -67,8 +67,7 @@ Route::prefix('aspek-penilaian')->group(function () {
     Route::get('/cabang/{id}', [AspekPenilaianController::class, 'aspekPenilaianByCabangLomba']);
 });
 
-Route::prefix('penilaian')->group(function () {
-    Route::post('/', [PenilaianController::class, 'store']);
-        Route::get('/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
-
-});
+// Penilaian
+Route::get('/penilaian/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
+// Juri Only
+Route::post('/penilaian', [PenilaianController::class, 'store'])->middleware('auth:sanctum');
