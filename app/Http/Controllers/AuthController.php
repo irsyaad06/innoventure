@@ -24,10 +24,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        // Mengembalikan data juri yang sedang login
         return response()->json([
             'message' => 'Login berhasil.',
-            'user' => Auth::guard('juri')->user(),
+            'user' => Auth::guard('juri')->user(), // <-- Ini sudah mengembalikan data user
         ]);
     }
 

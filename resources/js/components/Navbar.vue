@@ -1,4 +1,3 @@
-<!-- Navbar.vue -->
 <template>
     <nav class="bg-gray-900 fixed w-full z-20 top-0 start-0">
         <div
@@ -17,12 +16,67 @@
             <div
                 class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
             >
+                <div v-if="isLoading" class="hidden md:flex items-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-sky-300"></div>
+                </div>
+                
                 <RouterLink
+                    v-else-if="!isAuthenticated"
                     to="/daftar"
                     class="text-white hidden md:flex bg-gradient-to-bl from-sky-300 via-sky-500 to-sky-600 hover:bg-gradient-to-tr font-medium rounded-lg text-xs md:text-sm px-5 py-2.5 text-center me-2 mb-2 cursor-pointer"
                 >
                     Daftar Lomba
                 </RouterLink>
+
+                <div
+                    v-else-if="juri"
+                    class="relative hidden md:flex items-center"
+                >
+                    <button
+                        @click="isProfileDropdownOpen = !isProfileDropdownOpen"
+                        class="flex items-center gap-2 text-white p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                        <span class="font-semibold text-sm">{{
+                            juri.nama
+                        }}</span>
+                        <svg
+                            class="w-2.5 h-2.5 transition-transform"
+                            :class="{ 'rotate-180': isProfileDropdownOpen }"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 10 6"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="m1 1 4 4 4-4"
+                            />
+                        </svg>
+                    </button>
+                    <div
+                        v-show="isProfileDropdownOpen"
+                        ref="profileDropdownRef"
+                        class="absolute top-full right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg py-2 z-50"
+                    >
+                        <RouterLink
+                            to="/info-juri"
+                            @click="isProfileDropdownOpen = false"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-600"
+                        >
+                            Profil Saya
+                        </RouterLink>
+                        <a
+                            href="#"
+                            @click.prevent="handleLogout"
+                            class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-600"
+                        >
+                            Logout
+                        </a>
+                    </div>
+                </div>
                 <button
                     data-collapse-toggle="navbar-cta"
                     type="button"
@@ -87,7 +141,6 @@
                                 />
                             </svg>
                         </button>
-                        <!-- Dropdown menu -->
                         <div
                             id="dropdownNavbar"
                             v-show="isDropdownOpen"
@@ -149,17 +202,6 @@
                             >Seminar</RouterLink
                         >
                     </li>
-                    <!-- <li>
-                        <RouterLink
-                            to="/submission"
-                            class="block py-2 px-3 rounded-sm md:p-0 md:hover:bg-transparent hover:text-sky-300 text-gray-400 hover:bg-gray-700"
-                            aria-current="page"
-                            :class="{
-                                'text-sky-300': route.path === '/submission',
-                            }"
-                            >Pengumpulan Web-Dev</RouterLink
-                        >
-                    </li> -->
                 </ul>
             </div>
         </div>
@@ -167,36 +209,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onUnmounted } from "vue";
-import { RouterLink, useRoute } from "vue-router";
+import { ref, onMounted, computed, onUnmounted, watch } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useCabangLombaStore } from "../stores/cabangLomba";
+import { useJuriStore } from "../stores/juriStore";
 
+// Inisialisasi
 const isDropdownOpen = ref(false);
+const isProfileDropdownOpen = ref(false);
 const cabangLombaStore = useCabangLombaStore();
+const juriStore = useJuriStore();
 const route = useRoute();
+const router = useRouter();
+
+// Computed properties untuk data juri
+const isAuthenticated = computed(() => juriStore.isAuthenticated);
+const juri = computed(() => juriStore.currentJuri);
+const isLoading = computed(() => juriStore.isLoading);
 
 const isCompetisiRouteActive = computed(() => {
     return route.path.startsWith("/kompetisi");
 });
 
+// Logika untuk menutup dropdown saat klik di luar
 const dropdownRef = ref(null);
+const profileDropdownRef = ref(null);
 
 function handleClickOutside(event) {
+    const dropdownNavbarLink = document.getElementById("dropdownNavbarLink");
     if (
         dropdownRef.value &&
         !dropdownRef.value.contains(event.target) &&
-        event.target.id !== "dropdownNavbarLink"
+        !dropdownNavbarLink.contains(event.target)
     ) {
         isDropdownOpen.value = false;
     }
+
+    const profileButton = profileDropdownRef.value?.previousElementSibling;
+    if (
+        profileDropdownRef.value &&
+        !profileDropdownRef.value.contains(event.target) &&
+        profileButton &&
+        !profileButton.contains(event.target)
+    ) {
+        isProfileDropdownOpen.value = false;
+    }
 }
 
-onMounted(() => {
+// Method untuk logout
+const handleLogout = async () => {
+    isProfileDropdownOpen.value = false;
+    await juriStore.logout();
+    router.push("/login");
+};
+
+onMounted(async () => {
+    // Wait for juri store initialization
+    await juriStore.waitForInitialization();
     cabangLombaStore.fetchAll();
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
-    document.removeEventListener("click", handleClickOutside);
+    document.removeEventListener("mousedown", handleClickOutside);
 });
 </script>

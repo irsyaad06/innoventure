@@ -71,3 +71,7 @@ Route::prefix('aspek-penilaian')->group(function () {
 Route::get('/penilaian/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
 // Juri Only
 Route::post('/penilaian', [PenilaianController::class, 'store'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->get('/juri', function () {
+    return auth('juri')->user();
+});
