@@ -105,7 +105,6 @@
                                 </a>
                             </div>
                         </section>
-
                         <section>
                             <div
                                 class="flex justify-between items-center border-b-2 border-cyan-400/30 pb-3 mb-6"
@@ -145,7 +144,7 @@
                                     target="_blank"
                                     class="text-sm text-cyan-400 hover:text-cyan-700 transition-colors font-semibold"
                                 >
-                                    Buka PDF
+                                    Buka PPT
                                     <i
                                         class="fas fa-external-link-alt ml-1"
                                     ></i>
@@ -189,10 +188,16 @@
                                         min="0"
                                         max="100"
                                         class="form-input flex-grow"
+                                        :class="{
+                                            'bg-gray-700 cursor-not-allowed':
+                                                !isJuriAuthenticated,
+                                        }"
                                         placeholder="Skor (1-100)"
+                                        :disabled="!isJuriAuthenticated"
                                         required
                                     />
                                     <button
+                                        v-if="isJuriAuthenticated"
                                         @click.prevent="
                                             submitSingleScore(aspek)
                                         "
@@ -229,10 +234,12 @@
 import { useWebdevProgressStore } from "../stores/webDevProgress.js";
 import { useAspekPenilaianStore } from "../stores/aspekPenilaian.js";
 import { usePenilaianStore } from "../stores/penilaianStore.js";
-import DigitalDataBG from "../components/DigitalDataBG.vue";
+import { useJuriStore } from "../stores/juriStore.js";
 import { mapState } from "pinia";
+import DigitalDataBG from "../components/DigitalDataBG.vue";
 
 export default {
+    components: { DigitalDataBG },
     data() {
         return {
             scores: {},
@@ -240,12 +247,21 @@ export default {
         };
     },
     computed: {
-        ...mapState(useWebdevProgressStore, {
-            detail: "progressDetail",
-        }),
+        ...mapState(useWebdevProgressStore, { detail: "progressDetail" }),
         ...mapState(useAspekPenilaianStore, {
             aspekPenilaian: "aspekPenilaians",
         }),
+        juriStore() {
+            return useJuriStore();
+        },
+        isJuriAuthenticated() {
+            return this.juriStore.isAuthenticated;
+        },
+        currentJuriId() {
+            return this.juriStore.isAuthenticated
+                ? this.juriStore.juri.id
+                : null;
+        },
         isLoading() {
             return (
                 useWebdevProgressStore().loading ||
@@ -261,77 +277,84 @@ export default {
             );
         },
         totalScore() {
-            if (!this.aspekPenilaian.length) return 0;
+            if (!this.aspekPenilaian || !this.aspekPenilaian.length) return 0;
             return this.aspekPenilaian.reduce((total, aspek) => {
                 const score = this.scores[aspek.id] || 0;
                 const bobot = aspek.bobot_penilaian / 100;
                 return total + score * bobot;
             }, 0);
         },
+        isDataReadyForScores() {
+            return this.detail && this.aspekPenilaian.length > 0 && this.juriStore.isReady;
+        },
+    },
+    watch: {
+        isDataReadyForScores(isReady) {
+            if (isReady) {
+                this.fetchExistingScores();
+            }
+        },
     },
     methods: {
+        // Menggunakan fetchAllScores untuk mengambil semua data skor
+        async fetchExistingScores() {
+            const submissionId = this.$route.params.id;
+            const penilaianStore = usePenilaianStore();
+
+            // Panggil aksi fetchAllScores tanpa juriId
+            await penilaianStore.fetchAllScores({
+                progressId: submissionId
+            });
+
+            // Inisialisasi properti 'scores' dengan data yang sudah diambil
+            const existingScores = penilaianStore.currentScores;
+            const initialScores = {};
+            this.aspekPenilaian.forEach(aspek => {
+                initialScores[aspek.id] = existingScores[aspek.id] || 0;
+            });
+            
+            this.scores = initialScores;
+        },
         async submitSingleScore(aspek) {
             const score = this.scores[aspek.id] || 0;
             if (score < 0 || score > 100) {
                 alert("Skor harus di antara 0 dan 100.");
                 return;
             }
-
             const penilaianStore = usePenilaianStore();
             const payload = {
                 webdev_progress_id: this.detail.id,
                 aspek_penilaian_id: aspek.id,
                 skor: score,
-                juri_id: 1, // Ganti dengan ID juri yang relevan
+                juri_id: this.currentJuriId,
             };
-
             const result = await penilaianStore.submitScore(payload);
-
             if (result) {
                 alert(
-                    penilaianStore.successMessage ||
-                        `Skor ${score} untuk aspek "${aspek.nama}" berhasil disimpan.`
+                    penilaianStore.successMessage || `Skor berhasil disimpan.`
                 );
             } else {
                 alert(`Gagal menyimpan skor: ${penilaianStore.error}`);
             }
-        },
-        submitComment() {
-            if (!this.comments) {
-                alert("Komentar tidak boleh kosong.");
-                return;
-            }
-            console.log(`Menyimpan komentar untuk ID Karya: ${this.detail.id}`);
-            console.log(`Komentar: ${this.comments}`);
-            alert("Komentar berhasil disimpan.");
         },
     },
     async created() {
         const submissionId = this.$route.params.id;
         const progressStore = useWebdevProgressStore();
         const aspekStore = useAspekPenilaianStore();
-        const penilaianStore = usePenilaianStore();
 
         await progressStore.fetchOne(submissionId);
-
         if (progressStore.progressDetail && progressStore.progressDetail.tim) {
             const idCabangLomba =
                 progressStore.progressDetail.tim.cabang_lomba_id;
             await aspekStore.fetchByCabangLomba(idCabangLomba);
-
-            const juriId = 1; // Ganti dengan ID juri yang relevan
-            await penilaianStore.fetchScores({
-                progressId: submissionId,
-                juriId: juriId,
-            });
-
-            this.scores = Object.assign({}, penilaianStore.currentScores);
         }
     },
 };
 </script>
 
 <style scoped>
+/* ... (style tidak ada perubahan) ... */
 .form-input {
     width: 100%;
     padding: 0.75rem 1rem;

@@ -6,13 +6,14 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Authenticatable as AuthenticatableTrait; // Trait untuk implementasi
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+use Laravel\Sanctum\HasApiTokens;
 
 // 2. Terapkan 'implements Authenticatable'
 class Juri extends Model implements Authenticatable
 {
     // 3. Gunakan trait di dalam kelas
-    use AuthenticatableTrait;
+    use AuthenticatableTrait, HasApiTokens;
 
     /**
      * The table associated with the model.
@@ -65,5 +66,4 @@ class Juri extends Model implements Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }
-    
 }

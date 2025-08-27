@@ -81,11 +81,8 @@ class WebdevProgressResource extends Resource
                     ->placeholder('https://yourwebsite.com'),
 
                 FileUpload::make('ppt')
-                    ->label('File Presentasi (PPT/PPTX)')
-                    ->acceptedFileTypes([
-                        'application/vnd.ms-powerpoint',
-                        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-                    ])
+                    ->label('File Presentasi (PPT/PDF)')
+                    ->acceptedFileTypes(['application/pdf'])
                     ->maxSize(5120) // 5MB
                     ->directory('webdev/presentasi')
                     ->downloadable()
@@ -130,7 +127,7 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn ($record) => $record->deskripsi_pdf ? Storage::url($record->deskripsi_pdf) : null)
+                    ->url(fn($record) => $record->deskripsi_pdf ? Storage::url($record->deskripsi_pdf) : null)
                     ->openUrlInNewTab(),
 
                 IconColumn::make('link_repository')
@@ -142,7 +139,7 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn ($record) => $record->link_repository)
+                    ->url(fn($record) => $record->link_repository)
                     ->openUrlInNewTab(),
 
                 IconColumn::make('link_demo')
@@ -154,7 +151,7 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn ($record) => $record->link_demo)
+                    ->url(fn($record) => $record->link_demo)
                     ->openUrlInNewTab(),
 
                 IconColumn::make('link_hosting')
@@ -166,7 +163,7 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn ($record) => $record->link_hosting)
+                    ->url(fn($record) => $record->link_hosting)
                     ->openUrlInNewTab(),
 
                 IconColumn::make('ppt')
@@ -178,7 +175,7 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn ($record) => $record->ppt ? Storage::url($record->ppt) : null)
+                    ->url(fn($record) => $record->ppt ? Storage::url($record->ppt) : null)
                     ->openUrlInNewTab(),
             ])
             ->filters([

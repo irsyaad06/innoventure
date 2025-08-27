@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Models\Juri;
+use Illuminate\Support\Facades\Hash;
+
 
 class AuthController extends Controller
 {
@@ -15,28 +18,31 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // 👇 PERUBAHAN: Tentukan guard 'juri' saat mencoba login
-        if (!Auth::guard('juri')->attempt($request->only('email', 'password'))) {
+        // Cari juri berdasarkan email
+        $juri = Juri::where('email', $request->email)->first();
+
+        // Verifikasi juri dan password
+        if (!$juri || !Hash::check($request->password, $juri->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Email atau password yang Anda masukkan salah.'],
             ]);
         }
 
-        $request->session()->regenerate();
+        // Hapus token lama & buat token baru
+        $juri->tokens()->delete();
+        $token = $juri->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login berhasil.',
-            'user' => Auth::guard('juri')->user(), // <-- Ini sudah mengembalikan data user
+            'user' => $juri,
+            'token' => $token, // <-- Kirim token ke frontend
         ]);
     }
 
     public function logout(Request $request)
     {
-        // 👇 PERUBAHAN: Tentukan guard 'juri' saat logout
-        Auth::guard('juri')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Hapus token yang sedang digunakan untuk otentikasi
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logout berhasil.']);
     }

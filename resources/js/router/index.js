@@ -92,26 +92,13 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
     const juriStore = useJuriStore();
 
-    // Wait for initial session check to complete
-    await juriStore.waitForInitialization();
-
-    // Check if route requires authentication
-    if (to.meta.requiresAuth) {
-        if (!juriStore.isAuthenticated) {
-            // Redirect to login if not authenticated
-            next({ name: "Login" });
-            return;
-        }
-    } else if (to.name === "Login" && juriStore.isAuthenticated) {
-        // Redirect to info-juri if already logged in and trying to access login
-        next({ name: "InfoJuri" });
-        return;
+    if (to.meta.requiresAuth && !juriStore.isAuthenticated) {
+        next({ name: "Login" }); // Alihkan jika butuh login & belum login
+    } else {
+        next(); // Lanjutkan jika tidak butuh login ATAU sudah login
     }
-
-    // Continue navigation
-    next();
 });
 export default router;

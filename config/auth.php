@@ -42,7 +42,7 @@ return [
         ],
 
         'juri' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'juris', // Menggunakan provider 'juris'
         ],
     ],

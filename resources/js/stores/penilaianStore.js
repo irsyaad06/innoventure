@@ -71,5 +71,29 @@ export const usePenilaianStore = defineStore("penilaian", {
                 this.isSubmitting = false;
             }
         },
+        async fetchAllScores({ progressId, juriId }) {
+            this.error = null;
+            try {
+                const response = await api.get(
+                    `/penilaian/karya/${progressId}`
+                );
+                if (response.data.code === 200) {
+                    this.currentScores = response.data.payload;
+                    return true;
+                }
+            } catch (err) {
+                if (err.response && err.response.status === 404) {
+                    this.currentScores = {};
+                } else {
+                    this.error = "Gagal mengambil skor yang sudah ada.";
+                }
+                console.error("Gagal fetch skor:", err);
+                return false;
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+
+
     },
 });

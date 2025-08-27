@@ -20,7 +20,7 @@ class PenilaianController extends Controller
                 'webdev_progress_id' => 'required|exists:webdev_progress,id',
                 'aspek_penilaian_id' => 'required|exists:aspek_penilaians,id',
                 'skor'               => 'required|integer|min:0|max:100',
-                'juri_id'            => 'required|exists:users,id', // Validasi bahwa juri_id ada di tabel users
+                'juri_id'            => 'required|exists:juris,id', // Validasi bahwa juri_id ada di tabel 
             ]);
 
             // PERUBAHAN 2: Hapus pengambilan Auth::id()
@@ -51,6 +51,15 @@ class PenilaianController extends Controller
         }
     }
 
+    public function index()
+    {
+        return response()->json([
+            'code' => 200,
+            'message' => 'success',
+            'payload' => Penilaian::all()
+        ]);
+    }
+
     public function getScoresByJuri($progressId, $juriId)
     {
         $scores = Penilaian::where('webdev_progress_id', $progressId)
@@ -64,6 +73,46 @@ class PenilaianController extends Controller
             'code' => 200,
             'message' => 'Skor berhasil diambil.',
             'payload' => $formattedScores,
+        ]);
+    }
+    public function getScoresByProgress($progressId)
+    {
+        $scores = Penilaian::where('webdev_progress_id', $progressId)->get();
+
+        // Mengubah format data agar mudah digunakan di Vue: { aspek_id: skor }
+        $hasilKarya
+         = $scores->pluck('skor', 'aspek_penilaian_id');
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Skor berhasil diambil.',
+            'payload' => $hasilKarya
+            ,
+        ]);
+    }
+
+    public function getAverageScores($progressId)
+    {
+        $penilaians = Penilaian::where('webdev_progress_id', $progressId)
+            ->with('aspekPenilaian')
+            ->get();
+
+        // Mengelompokkan berdasarkan aspek penilaian
+        $scoresByAspek = $penilaians->groupBy('aspek_penilaian_id');
+
+        $averageScores = [];
+
+        // Hitung rata-rata untuk setiap aspek
+        foreach ($scoresByAspek as $aspekId => $scores) {
+            if ($scores->count() > 0) {
+                $averageScores[$aspekId] = $scores->avg('skor');
+            }
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Skor rata-rata berhasil diambil.',
+            'payload' => $averageScores,
         ]);
     }
 }

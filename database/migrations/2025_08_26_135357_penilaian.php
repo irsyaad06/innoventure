@@ -26,7 +26,7 @@ return new class extends Migration
             
             // Foreign key to the judge (assuming a 'users' table)
             $table->foreignId('juri_id')
-                  ->constrained('users')
+                  ->constrained('juris')
                   ->onDelete('cascade');
 
             $table->unsignedInteger('skor');

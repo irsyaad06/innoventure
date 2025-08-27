@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\WebDevController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Http\Controllers\WebDevController;
 use App\Http\Controllers\CabangLombaController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\TimController;
@@ -12,8 +13,9 @@ use App\Http\Controllers\MedpartController;
 use App\Http\Controllers\DaftarSeminar;
 use App\Http\Controllers\AspekPenilaianController;
 use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\AuthController;
 
-
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::prefix('cabang-lomba')->group(function () {
     Route::get('/', [CabangLombaController::class, 'index']);
@@ -69,9 +71,14 @@ Route::prefix('aspek-penilaian')->group(function () {
 
 // Penilaian
 Route::get('/penilaian/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
-// Juri Only
-Route::post('/penilaian', [PenilaianController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/penilaian/karya/{progressId}', [PenilaianController::class, 'getScoresByProgress']);
+Route::get('/penilaian', [PenilaianController::class, 'index']);
 
-Route::middleware('auth:sanctum')->get('/juri', function () {
-    return auth('juri')->user();
+// Juri Only
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/juri', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/penilaian', [PenilaianController::class, 'store']);
 });
