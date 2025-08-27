@@ -38,11 +38,23 @@
                     </div>
                     <div class="bg-gray-700/50 p-4 rounded-lg">
                         <label class="text-sm text-gray-400 block"
-                            >Instansi</label
+                            >Asal Sekolah/Instansi</label
                         >
                         <p class="text-lg font-semibold">
                             {{ seminarStore.pendaftarDetail.instansi }}
                         </p>
+                    </div>
+                    <div class="bg-gray-700/50 border border-yellow-500 p-4 rounded-lg">
+                        <label class="text-sm text-gray-400 block"
+                            >Grup Seminar</label
+                        >
+                        <a
+                            href="https://chat.whatsapp.com/B9YIqjJ4BrYBvEzB2Q6mcT?mode=ems_copy_c"
+                            target="_blank"
+                            class="text-lg font-semibold text-yellow-500 hover:text-yellow-300"
+                        >
+                            Klik aku dong!.
+                        </a>
                     </div>
                     <div
                         class="bg-cyan-600/30 border border-cyan-500 p-4 rounded-lg"
