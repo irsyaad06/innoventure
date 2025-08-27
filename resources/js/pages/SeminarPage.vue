@@ -106,7 +106,7 @@
 
 <script>
 // Bagian script tidak perlu diubah
-import { useSeminarStore } from "@/stores/seminarStore";
+import { useSeminarStore } from "../stores/seminarStore";
 import DigitalDataBG from "../components/DigitalDataBG.vue";
 
 export default {

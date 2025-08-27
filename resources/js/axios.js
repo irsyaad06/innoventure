@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
     // Langsung arahkan ke base URL API Anda
-    baseURL: "http://127.0.0.1:8000/api",
+    baseURL: "/api",
 });
 
 // Interceptor untuk menambahkan Bearer Token secara otomatis ke setiap request
