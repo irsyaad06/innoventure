@@ -14,7 +14,7 @@ class WebdevProgress extends Model
         'tim_id',
         'email_ketua',
         'judul_proyek',
-        'deskripsi_pdf',
+        'catatan',
         'link_repository',
         'link_demo',
         'link_hosting',

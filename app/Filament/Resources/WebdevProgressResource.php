@@ -53,7 +53,7 @@ class WebdevProgressResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                TextArea::make('deskripsi_pdf')
+                TextArea::make('catatan')
                     ->label('Catatan Juri')
                     ->required()
                     ->maxLength(255)
@@ -126,17 +126,17 @@ class WebdevProgressResource extends Resource
                         return strlen($state) > 50 ? $state : null;
                     }),
 
-                IconColumn::make('deskripsi_pdf')
-                    ->label('PDF')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-document-text')
-                    ->falseIcon('heroicon-o-x-mark')
-                    ->colors([
-                        'success' => true,
-                        'danger' => false,
-                    ])
-                    ->url(fn($record) => $record->deskripsi_pdf ? Storage::url($record->deskripsi_pdf) : null)
-                    ->openUrlInNewTab(),
+                // IconColumn::make('catatan')
+                //     ->label('PDF')
+                //     ->boolean()
+                //     ->trueIcon('heroicon-o-document-text')
+                //     ->falseIcon('heroicon-o-x-mark')
+                //     ->colors([
+                //         'success' => true,
+                //         'danger' => false,
+                //     ])
+                //     ->url(fn($record) => $record->catatan ? Storage::url($record->catatan) : null)
+                //     ->openUrlInNewTab(),
 
                 IconColumn::make('link_repository')
                     ->label('Repo')

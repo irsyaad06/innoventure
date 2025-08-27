@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('tim_id')->constrained('tims')->onDelete('cascade');
             $table->string('email_ketua')->unique();
             $table->string('judul_proyek');
-            $table->string('deskripsi_pdf'); // upload file deskripsi singkat (PDF)
+            $table->text('catatan'); // upload file deskripsi singkat (PDF)
             $table->string('link_repository')->nullable(); // GitHub/Drive
             $table->string('link_demo')->nullable(); // YouTube/Drive
             $table->string('link_hosting')->nullable(); // website/hosting
