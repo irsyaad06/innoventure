@@ -260,7 +260,7 @@ function handleClickOutside(event) {
 const handleLogout = async () => {
     isProfileDropdownOpen.value = false;
     await juriStore.logout();
-    router.push("/login");
+    router.push("/login-juri");
 };
 
 onMounted(async () => {

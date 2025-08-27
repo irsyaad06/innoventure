@@ -77,7 +77,7 @@ const juri = computed(() => juriStore.currentJuri);
 
 const handleLogout = async () => {
     await juriStore.logout();
-    router.push("/login"); // Arahkan kembali ke halaman login
+    router.push("/login-juri"); // Arahkan kembali ke halaman login
 };
 </script>
 
