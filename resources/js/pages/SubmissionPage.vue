@@ -108,27 +108,6 @@
                         </div>
                         <div>
                             <label class="block text-white font-medium"
-                                >Deskripsi Singkat Project (PDF)
-                                <span class="text-red-500">*</span></label
-                            >
-                            <input
-                                type="file"
-                                accept=".pdf"
-                                required
-                                @change="
-                                    handleFileChange($event, 'deskripsiFile')
-                                "
-                                class="w-full mt-2 block rounded-lg border border-gray-600 bg-gray-800 text-white px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
-                                :class="{
-                                    'border-green-500': form.deskripsiFile,
-                                }"
-                            />
-                            <small class="text-gray-400"
-                                >Upload max 10 MB</small
-                            >
-                        </div>
-                        <div>
-                            <label class="block text-white font-medium"
                                 >Link Repository (GitHub/Drive)
                                 <span class="text-red-500">*</span></label
                             >
@@ -344,7 +323,6 @@ export default {
                 linkRepo: "",
                 linkVideo: "",
                 linkWebsite: "",
-                deskripsiFile: null,
                 presentasiFile: null,
                 persetujuan: null,
             },
@@ -368,7 +346,6 @@ export default {
                     this.form.judulProject &&
                     this.form.linkRepo &&
                     this.form.linkVideo &&
-                    this.form.deskripsiFile &&
                     this.form.presentasiFile &&
                     this.isUrlValid(this.form.linkRepo) &&
                     this.isUrlValid(this.form.linkVideo) &&
@@ -456,7 +433,6 @@ export default {
             // Tutup modal konfirmasi
             this.showConfirmationModal = false;
 
-            const pdfFile = this.form.deskripsiFile;
             const pptFile = this.form.presentasiFile;
 
             if (!pdfFile || !pptFile) {
@@ -474,7 +450,6 @@ export default {
             formData.append("link_repository", this.form.linkRepo);
             formData.append("link_demo", this.form.linkVideo);
             formData.append("link_hosting", this.form.linkWebsite);
-            formData.append("deskripsi_pdf", pdfFile);
             formData.append("ppt", pptFile);
             formData.append("persetujuan", this.form.persetujuan ? 1 : 0);
 
@@ -493,7 +468,6 @@ export default {
                         linkRepo: "",
                         linkVideo: "",
                         linkWebsite: "",
-                        deskripsiFile: null,
                         presentasiFile: null,
                         persetujuan: null,
                     };
