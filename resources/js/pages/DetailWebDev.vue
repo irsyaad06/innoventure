@@ -184,7 +184,7 @@
                                 <div class="flex items-center gap-3">
                                     <input
                                         type="number"
-                                        v-model.number="scores[aspek.id]"
+                                        v-model.number="aspek.skor"
                                         min="0"
                                         max="100"
                                         class="form-input flex-grow"
@@ -242,12 +242,13 @@ export default {
     components: { DigitalDataBG },
     data() {
         return {
-            scores: {},
+            // Hapus 'scores: {}' karena sudah tidak diperlukan
             comments: "",
         };
     },
     computed: {
         ...mapState(useWebdevProgressStore, { detail: "progressDetail" }),
+        // Sekarang aspekPenilaians sudah berisi data skor
         ...mapState(useAspekPenilaianStore, {
             aspekPenilaian: "aspekPenilaians",
         }),
@@ -276,47 +277,24 @@ export default {
                 usePenilaianStore().error
             );
         },
+        // PERUBAHAN: Hitung total dari data yang sudah ada di aspekPenilaians
         totalScore() {
             if (!this.aspekPenilaian || !this.aspekPenilaian.length) return 0;
             return this.aspekPenilaian.reduce((total, aspek) => {
-                const score = this.scores[aspek.id] || 0;
+                const score = aspek.skor || 0;
                 const bobot = aspek.bobot_penilaian / 100;
                 return total + score * bobot;
             }, 0);
         },
-        isDataReadyForScores() {
-            return this.detail && this.aspekPenilaian.length > 0 && this.juriStore.isReady;
-        },
     },
-    watch: {
-        isDataReadyForScores(isReady) {
-            if (isReady) {
-                this.fetchExistingScores();
-            }
-        },
-    },
+    // Hapus watcher yang memanggil fetchExistingScores
+    // karena sudah tidak diperlukan
+
     methods: {
-        // Menggunakan fetchAllScores untuk mengambil semua data skor
-        async fetchExistingScores() {
-            const submissionId = this.$route.params.id;
-            const penilaianStore = usePenilaianStore();
-
-            // Panggil aksi fetchAllScores tanpa juriId
-            await penilaianStore.fetchAllScores({
-                progressId: submissionId
-            });
-
-            // Inisialisasi properti 'scores' dengan data yang sudah diambil
-            const existingScores = penilaianStore.currentScores;
-            const initialScores = {};
-            this.aspekPenilaian.forEach(aspek => {
-                initialScores[aspek.id] = existingScores[aspek.id] || 0;
-            });
-            
-            this.scores = initialScores;
-        },
+        // PERUBAHAN: Hapus metode fetchExistingScores
         async submitSingleScore(aspek) {
-            const score = this.scores[aspek.id] || 0;
+            // Ambil skor langsung dari objek aspek
+            const score = aspek.skor || 0;
             if (score < 0 || score > 100) {
                 alert("Skor harus di antara 0 dan 100.");
                 return;
@@ -347,7 +325,9 @@ export default {
         if (progressStore.progressDetail && progressStore.progressDetail.tim) {
             const idCabangLomba =
                 progressStore.progressDetail.tim.cabang_lomba_id;
-            await aspekStore.fetchByCabangLomba(idCabangLomba);
+
+            // Perubahan ini tetap sama dari instruksi sebelumnya
+            await aspekStore.fetchByCabangLomba(idCabangLomba, submissionId);
         }
     },
 };

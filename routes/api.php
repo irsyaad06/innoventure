@@ -66,13 +66,14 @@ Route::prefix('daftarseminar')->group(function () {
 });
 
 Route::prefix('aspek-penilaian')->group(function () {
-    Route::get('/cabang/{id}', [AspekPenilaianController::class, 'aspekPenilaianByCabangLomba']);
+    Route::get('/cabang/{cabangLombaId}/progress/{progressId}', [AspekPenilaianController::class, 'aspekPenilaianByCabangLomba']);
 });
 
 // Penilaian
 Route::get('/penilaian/karya/{progressId}/juri/{juriId}', [PenilaianController::class, 'getScoresByJuri']);
 Route::get('/penilaian/karya/{progressId}', [PenilaianController::class, 'getScoresByProgress']);
 Route::get('/penilaian', [PenilaianController::class, 'index']);
+
 
 // Juri Only
 Route::middleware('auth:sanctum')->group(function () {

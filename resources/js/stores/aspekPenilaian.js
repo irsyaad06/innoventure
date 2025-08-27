@@ -8,11 +8,13 @@ export const useAspekPenilaianStore = defineStore("aspekPenilaian", {
         error: null,
     }),
     actions: {
-        async fetchByCabangLomba(id_cabang_lomba) {
+        // PERUBAHAN: Sekarang menerima dua parameter
+        async fetchByCabangLomba(id_cabang_lomba, progressId) {
             this.loading = true;
             this.error = null;
             try {
-                const res = await api.get(`/aspek-penilaian/cabang/${id_cabang_lomba}`);
+                // PERUBAHAN: Memanggil API baru yang sudah digabungkan
+                const res = await api.get(`/aspek-penilaian/cabang/${id_cabang_lomba}/progress/${progressId}`);
                 this.aspekPenilaians = res.data.payload;
             } catch (err) {
                 this.error =
