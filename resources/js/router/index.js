@@ -73,7 +73,7 @@ const routes = [
             },
 
             {
-                path: "/login",
+                path: "/login-juri",
                 name: "Login",
                 component: JuriLogin,
             },

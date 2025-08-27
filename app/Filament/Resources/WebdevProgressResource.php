@@ -53,14 +53,11 @@ class WebdevProgressResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                FileUpload::make('deskripsi_pdf')
-                    ->label('Deskripsi Proyek (PDF)')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(5120) // 5MB
-                    ->directory('webdev/deskripsi')
-                    ->downloadable()
-                    ->openable()
-                    ->required(),
+                TextArea::make('deskripsi_pdf')
+                    ->label('Catatan Juri')
+                    ->required()
+                    ->maxLength(255)
+                    ->default('Catatan :'),
 
                 TextInput::make('link_repository')
                     ->label('Link Repository (GitHub/Drive)')
@@ -80,13 +77,24 @@ class WebdevProgressResource extends Resource
                     ->maxLength(255)
                     ->placeholder('https://yourwebsite.com'),
 
-                FileUpload::make('ppt')
-                    ->label('File Presentasi (PPT/PDF)')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(5120) // 5MB
-                    ->directory('webdev/presentasi')
-                    ->downloadable()
-                    ->openable(),
+                TextInput::make('ppt')
+                    ->label('Link Drive PPT')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://ppt.com'),
+
+                // FileUpload::make('ppt')
+                //     ->label('File Presentasi (PPT/PPTX)')
+                //     ->acceptedFileTypes([
+                //         'application/vnd.ms-powerpoint',
+                //         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                //         'application/pdf'
+                //     ])
+                //     ->maxSize(5120) // 5MB
+                //     ->directory('webdev/presentasi')
+                //     ->downloadable()
+                //     ->openable()
+                //     ->nullable(),
             ]);
     }
 
@@ -175,7 +183,8 @@ class WebdevProgressResource extends Resource
                         'success' => true,
                         'danger' => false,
                     ])
-                    ->url(fn($record) => $record->ppt ? Storage::url($record->ppt) : null)
+                    ->url(fn($record) => $record->ppt)
+                    // ->url(fn($record) => $record->ppt ? Storage::url($record->ppt) : null)
                     ->openUrlInNewTab(),
             ])
             ->filters([

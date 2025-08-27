@@ -34,7 +34,6 @@
                                 type="email"
                                 id="email"
                                 class="form-input pl-10"
-                                placeholder="juri@email.com"
                                 required
                             />
                         </div>
@@ -57,7 +56,6 @@
                                 type="password"
                                 id="password"
                                 class="form-input pl-10"
-                                placeholder="••••••••"
                                 required
                             />
                         </div>

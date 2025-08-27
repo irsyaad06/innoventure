@@ -22,6 +22,7 @@ class SeminarResource extends Resource
     protected static ?string $navigationGroup = 'Seminar';
 
     protected static ?string $navigationLabel = 'Seminars';
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $modelLabel = 'Seminar';
 

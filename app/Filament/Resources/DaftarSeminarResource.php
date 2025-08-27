@@ -25,6 +25,8 @@ class DaftarSeminarResource extends Resource
 
     protected static ?string $modelLabel = 'Daftar Seminar';
 
+    protected static ?int $navigationSort = 9;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -91,7 +93,7 @@ class DaftarSeminarResource extends Resource
                             ->label('Instansi'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query->when($data['instansi'], fn (Builder $query, $instansi) => $query->where('instansi', 'like', "%{$instansi}%"));
+                        return $query->when($data['instansi'], fn(Builder $query, $instansi) => $query->where('instansi', 'like', "%{$instansi}%"));
                     }),
             ])
             ->actions([
