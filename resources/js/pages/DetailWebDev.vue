@@ -1,5 +1,5 @@
 <template>
-    <div class="relative min-h-screen w-full bg-gray-900">
+    <div class="relative min-h-screen w-full bg-gray-900 pt-5 md:pt-0">
         <DigitalDataBG class="absolute inset-0 z-0" />
 
         <div
@@ -7,7 +7,7 @@
         >
             <div v-if="isLoading" class="text-center py-20">
                 <p class="text-xl text-cyan-400 animate-pulse">
-                    Memuat data karya untuk penilaian...
+                    Tunggu Sebentar Yaa > . <
                 </p>
             </div>
 
@@ -77,7 +77,7 @@
                                         'action-button',
                                         detail.link_hosting
                                             ? 'bg-green-600 hover:bg-green-500'
-                                            : 'bg-gray-600 opacity-60 cursor-not-allowed',
+                                            : 'bg-gray-600 opacity-60 cursor-not-allowed text-red-500',
                                     ]"
                                     :style="
                                         !detail.link_hosting
@@ -96,12 +96,39 @@
                                     <span>{{
                                         detail.link_hosting
                                             ? "Kunjungi Website"
-                                            : "Tidak Upload Website"
+                                            : "Tidak Hosting Web"
                                     }}</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a
+                                    :href="detail.ppt || '#'"
+                                    target="_blank"
+                                    :class="[
+                                        'action-button',
+                                        detail.ppt
+                                            ? 'bg-yellow-600 hover:bg-yellow-500'
+                                            : 'bg-gray-600 opacity-60 cursor-not-allowed text-red-500',
+                                    ]"
+                                    :style="
+                                        !detail.ppt
+                                            ? 'pointer-events: none;'
+                                            : ''
+                                    "
+                                >
                                     <i
-                                        v-if="detail.link_hosting"
-                                        class="fas fa-arrow-right"
+                                        :class="[
+                                            'fa-fw text-xl',
+                                            detail.ppt
+                                                ? 'fas fa-globe'
+                                                : 'fas fa-link-slash',
+                                        ]"
                                     ></i>
+                                    <span>{{
+                                        detail.ppt
+                                            ? "Cek PPT"
+                                            : "Tidak Upload PPT"
+                                    }}</span>
+                                    <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </section>
@@ -110,53 +137,36 @@
                                 class="flex justify-between items-center border-b-2 border-cyan-400/30 pb-3 mb-6"
                             >
                                 <h2 class="text-2xl font-bold text-cyan-400">
-                                    Deskripsi Proyek
+                                    Catatan Juri
                                 </h2>
-                                <a
-                                    :href="`/storage/${detail.deskripsi_pdf}`"
-                                    target="_blank"
-                                    class="text-sm text-cyan-400 hover:text-cyan-700 transition-colors font-semibold"
+                                <button
+                                    v-if="isJuriAuthenticated"
+                                    @click.prevent="simpanCatatan"
+                                    :disabled="penilaianStore.isSubmitting"
+                                    class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105"
                                 >
-                                    Buka PDF
-                                    <i
-                                        class="fas fa-external-link-alt ml-1"
-                                    ></i>
-                                </a>
-                            </div>
-                            <div
-                                class="aspect-w-4 aspect-h-5 bg-gray-800 rounded-lg overflow-hidden border border-white/10"
-                            >
-                                <iframe
-                                    :src="`/storage/${detail.deskripsi_pdf}`"
-                                    class="w-full h-full"
-                                ></iframe>
-                            </div>
-                        </section>
-                        <section>
-                            <div
-                                class="flex justify-between items-center border-b-2 border-cyan-400/30 pb-3 mb-6"
-                            >
-                                <h2 class="text-2xl font-bold text-cyan-400">
-                                    Power Point
-                                </h2>
-                                <a
-                                    :href="`/storage/${detail.ppt}`"
-                                    target="_blank"
-                                    class="text-sm text-cyan-400 hover:text-cyan-700 transition-colors font-semibold"
-                                >
-                                    Buka PPT
-                                    <i
-                                        class="fas fa-external-link-alt ml-1"
-                                    ></i>
-                                </a>
+                                    {{
+                                        penilaianStore.isSubmitting
+                                            ? "Menyimpan..."
+                                            : "Simpan"
+                                    }}
+                                </button>
                             </div>
                             <div
                                 class="aspect-w-16 aspect-h-9 bg-gray-800 rounded-lg overflow-hidden border border-white/10"
                             >
-                                <iframe
-                                    :src="`/storage/${detail.ppt}`"
-                                    class="w-full h-full"
-                                ></iframe>
+                                <textarea
+                                    id="message"
+                                    rows="9"
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Catatan juri..."
+                                    v-model.trim="detail.catatan"
+                                    :class="{
+                                        'bg-gray-700 cursor-not-allowed':
+                                            !isJuriAuthenticated,
+                                    }"
+                                    :disabled="!isJuriAuthenticated"
+                                ></textarea>
                             </div>
                         </section>
                     </aside>
@@ -189,7 +199,7 @@
                                         max="100"
                                         class="form-input flex-grow"
                                         :class="{
-                                            'bg-gray-700 cursor-not-allowed':
+                                            'cursor-not-allowed':
                                                 !isJuriAuthenticated,
                                         }"
                                         placeholder="Skor (1-100)"
@@ -214,7 +224,7 @@
                                 <label
                                     class="block text-base font-medium text-gray-400 mb-2"
                                 >
-                                    Total Skor Akhir
+                                    Total Skor
                                 </label>
                                 <div
                                     class="text-5xl font-bold text-cyan-400 tracking-tight drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
@@ -227,6 +237,7 @@
                 </div>
             </div>
         </div>
+        <PengesahanJuri class="relative z-10" />
     </div>
 </template>
 
@@ -237,9 +248,10 @@ import { usePenilaianStore } from "../stores/penilaianStore.js";
 import { useJuriStore } from "../stores/juriStore.js";
 import { mapState } from "pinia";
 import DigitalDataBG from "../components/DigitalDataBG.vue";
+import PengesahanJuri from "../components/PengesahanJuri.vue";
 
 export default {
-    components: { DigitalDataBG },
+    components: { DigitalDataBG, PengesahanJuri },
     data() {
         return {
             // Hapus 'scores: {}' karena sudah tidak diperlukan
@@ -247,6 +259,9 @@ export default {
         };
     },
     computed: {
+        penilaianStore() {
+            return usePenilaianStore();
+        },
         ...mapState(useWebdevProgressStore, { detail: "progressDetail" }),
         // Sekarang aspekPenilaians sudah berisi data skor
         ...mapState(useAspekPenilaianStore, {
@@ -291,7 +306,26 @@ export default {
     // karena sudah tidak diperlukan
 
     methods: {
-        // PERUBAHAN: Hapus metode fetchExistingScores
+        async simpanCatatan() {
+            if (!this.detail || !this.detail.tim_id) {
+                alert("Gagal menyimpan: ID Tim tidak ditemukan.");
+                return;
+            }
+
+            const penilaianStore = usePenilaianStore();
+            const payload = {
+                tim_id: this.detail.tim_id,
+                catatan: this.detail.catatan || "",
+            };
+
+            const sukses = await penilaianStore.updateCatatanJuri(payload);
+
+            if (sukses) {
+                alert(penilaianStore.successMessage);
+            } else {
+                alert(`Gagal menyimpan catatan: ${penilaianStore.error}`);
+            }
+        },
         async submitSingleScore(aspek) {
             // Ambil skor langsung dari objek aspek
             const score = aspek.skor || 0;

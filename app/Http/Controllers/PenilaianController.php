@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Penilaian;
 use Illuminate\Http\Request;
-// Hapus 'use Illuminate\Support\Facades\Auth;' karena tidak dipakai lagi
+use App\Models\Penilaian;
+use App\Models\WebdevProgress;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
 class PenilaianController extends Controller
@@ -81,13 +82,12 @@ class PenilaianController extends Controller
 
         // Mengubah format data agar mudah digunakan di Vue: { aspek_id: skor }
         $hasilKarya
-         = $scores->pluck('skor', 'aspek_penilaian_id');
+            = $scores->pluck('skor', 'aspek_penilaian_id');
 
         return response()->json([
             'code' => 200,
             'message' => 'Skor berhasil diambil.',
-            'payload' => $hasilKarya
-            ,
+            'payload' => $hasilKarya,
         ]);
     }
 
@@ -114,5 +114,35 @@ class PenilaianController extends Controller
             'message' => 'Skor rata-rata berhasil diambil.',
             'payload' => $averageScores,
         ]);
+    }
+
+    public function updateCatatanJuri(Request $request)
+    {
+        // 1. Validasi input, pastikan tim_id dan catatan ada
+        $validator = Validator::make($request->all(), [
+            'tim_id'  => 'required|integer|exists:tims,id',
+            'catatan' => 'nullable|string', // nullable agar catatan bisa dikosongkan
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $progress = WebdevProgress::updateOrCreate(
+                ['tim_id' => $request->input('tim_id')],
+                ['catatan' => $request->input('catatan')]
+            );
+
+            return response()->json([
+                'message' => 'Catatan juri berhasil disimpan.',
+                'data'    => $progress
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan pada server.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

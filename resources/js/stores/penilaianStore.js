@@ -71,7 +71,9 @@ export const usePenilaianStore = defineStore("penilaian", {
                 this.isSubmitting = false;
             }
         },
-        async fetchAllScores({ progressId, juriId }) {
+
+        async fetchAllScores({ progressId }) {
+            // Parameter juriId tidak diperlukan di sini
             this.error = null;
             try {
                 const response = await api.get(
@@ -90,10 +92,54 @@ export const usePenilaianStore = defineStore("penilaian", {
                 console.error("Gagal fetch skor:", err);
                 return false;
             } finally {
-                this.isSubmitting = false;
+                this.isSubmitting = false; // Sebaiknya ada state loading terpisah
             }
         },
 
+        /**
+         * FUNGSI BARU: Mengirim catatan juri ke server.
+         * @param {Object} payload - Berisi { tim_id, catatan }
+         * @returns {boolean} - True jika berhasil, false jika gagal.
+         */
+        async updateCatatanJuri(payload) {
+            this.isSubmitting = true;
+            this.error = null;
+            this.successMessage = null;
 
+            try {
+                // Panggil endpoint yang sudah dibuat di backend
+                const response = await api.post(
+                    "/penilaian/catatan-webdev",
+                    payload
+                );
+                this.successMessage =
+                    response.data.message || "Catatan berhasil disimpan.";
+                return true; // Mengindikasikan sukses
+            } catch (err) {
+                // Menangani error validasi atau server lainnya
+                if (
+                    err.response &&
+                    err.response.data &&
+                    err.response.data.errors
+                ) {
+                    this.error = Object.values(err.response.data.errors)
+                        .flat()
+                        .join(" ");
+                } else if (
+                    err.response &&
+                    err.response.data &&
+                    err.response.data.message
+                ) {
+                    this.error = err.response.data.message;
+                } else {
+                    this.error =
+                        "Gagal menyimpan catatan. Periksa koneksi Anda.";
+                }
+                console.error("Error updating catatan:", this.error);
+                return false; // Mengindikasikan gagal
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
     },
 });
