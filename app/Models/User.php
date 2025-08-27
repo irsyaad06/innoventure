@@ -6,8 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Support\Facades\Log;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -44,5 +47,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        Log::info('canAccessPanel dipanggil untuk user id: ' . $this->id);
+        return true; // Ganti logika ini sesuai kebutuhan akses kamu
+    }
+
+    // Kalau kamu mau, method ini bisa kamu hapus atau biarkan, tapi Filament default pakai canAccessPanel()
+    public function canAccessFilament(): bool
+    {
+        Log::info('canAccessFilament dipanggil untuk user id: ' . $this->id);
+        return true;
     }
 }
