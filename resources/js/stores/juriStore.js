@@ -5,9 +5,10 @@ export const useJuriStore = defineStore("juriAuth", {
     state: () => ({
         juri: null,
         // Ambil token dari localStorage saat store pertama kali dibuat
-        token: localStorage.getItem('authToken') || null, 
+        token: localStorage.getItem("authToken") || null,
         isLoading: false,
         error: null,
+        juris: [],
     }),
 
     getters: {
@@ -17,13 +18,26 @@ export const useJuriStore = defineStore("juriAuth", {
     },
 
     actions: {
+        async fetchJuri() {
+            this.isLoading = true;
+            try {
+                const res = await api.get("/list-juri");
+                this.juris = res.data.payload; // simpan hasil
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message || "Gagal fetch list juri";
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
         async login(credentials) {
             this.isLoading = true;
             this.error = null;
             try {
                 // Panggil endpoint login yang mengembalikan token
                 const response = await api.post("/login", credentials);
-                
+
                 const { user, token } = response.data;
 
                 // Simpan data ke state
@@ -31,12 +45,11 @@ export const useJuriStore = defineStore("juriAuth", {
                 this.token = token;
 
                 // Simpan token ke localStorage agar tidak hilang saat refresh
-                localStorage.setItem('authToken', token);
-
+                localStorage.setItem("authToken", token);
             } catch (err) {
                 this.juri = null;
                 this.token = null;
-                localStorage.removeItem('authToken');
+                localStorage.removeItem("authToken");
                 if (err.response && err.response.status === 422) {
                     this.error = "Email atau password salah.";
                 } else {
@@ -59,7 +72,7 @@ export const useJuriStore = defineStore("juriAuth", {
                 // Hapus semua data otentikasi dari frontend
                 this.juri = null;
                 this.token = null;
-                localStorage.removeItem('authToken');
+                localStorage.removeItem("authToken");
                 this.isLoading = false;
             }
         },
@@ -72,15 +85,15 @@ export const useJuriStore = defineStore("juriAuth", {
             if (this.token) {
                 try {
                     // Coba ambil data juri menggunakan token yang ada
-                    const response = await api.get('/juri');
+                    const response = await api.get("/juri");
                     this.juri = response.data;
                 } catch (error) {
                     // Jika token tidak valid (misal: expired), hapus semuanya
                     this.juri = null;
                     this.token = null;
-                    localStorage.removeItem('authToken');
+                    localStorage.removeItem("authToken");
                 }
             }
-        }
+        },
     },
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JuriController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\WebDevController;
@@ -74,6 +75,10 @@ Route::get('/penilaian/karya/{progressId}/juri/{juriId}', [PenilaianController::
 Route::get('/penilaian/karya/{progressId}', [PenilaianController::class, 'getScoresByProgress']);
 Route::get('/penilaian', [PenilaianController::class, 'index']);
 
+Route::get('/list-juri', [JuriController::class, 'index']);
+
+
+
 
 // Juri Only
 Route::middleware('auth:sanctum')->group(function () {
@@ -82,4 +87,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/penilaian', [PenilaianController::class, 'store']);
+    Route::post('/penilaian/catatan-webdev', [PenilaianController::class, 'updateCatatanJuri']);
 });
