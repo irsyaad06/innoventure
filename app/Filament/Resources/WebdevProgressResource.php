@@ -56,7 +56,6 @@ class WebdevProgressResource extends Resource
                 TextArea::make('catatan')
                     ->label('Catatan Juri')
                     ->required()
-                    ->maxLength(255)
                     ->default('Catatan :'),
 
                 TextInput::make('link_repository')
