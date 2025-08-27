@@ -3,7 +3,17 @@
         <DigitalDataBG class="z-0" />
         <div class="text-white text-3xl mb-5">Hasil & Live Perlombaan</div>
 
-        <div class="relative z-10 md:flex">
+        <div
+            v-if="isLoading"
+            class="flex justify-center items-center p-6 bg-gray-800/80 rounded-lg w-full"
+            style="min-height: 300px"
+        >
+            <h3 class="text-xl text-cyan-400 animate-pulse">
+                Tunggu Sebentar Yaa > . <
+            </h3>
+        </div>
+
+        <div v-else class="relative z-10 md:flex">
             <ul
                 class="flex-column space-y space-y-4 text-sm font-medium text-gray-400 md:me-4 mb-4 md:mb-0"
             >
@@ -56,14 +66,21 @@ import WebProgress from "../components/WebProgress.vue";
 
 const cabangLombaStore = useCabangLombaStore();
 const selectedLomba = ref(null);
+const isLoading = ref(true); // 3. Tambahkan state isLoading
 
 onMounted(() => {
-    cabangLombaStore.fetchAll().then(() => {
-        // Set item pertama sebagai yang terpilih secara default
-        if (cabangLombaStore.cabangLombas.length > 0) {
-            selectedLomba.value = cabangLombaStore.cabangLombas[0];
-        }
-    });
+    cabangLombaStore
+        .fetchAll()
+        .then(() => {
+            // Set item pertama sebagai yang terpilih secara default
+            if (cabangLombaStore.cabangLombas.length > 0) {
+                selectedLomba.value = cabangLombaStore.cabangLombas[0];
+            }
+        })
+        .finally(() => {
+            // 4. Set isLoading menjadi false setelah fetch selesai
+            isLoading.value = false;
+        });
 });
 
 const selectLomba = (lomba) => {
