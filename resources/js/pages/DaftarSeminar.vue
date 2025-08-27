@@ -1,6 +1,6 @@
 <template>
     <div
-        class="min-h-screen bg-transparent md:bg-gray-900 text-white flex flex-col items-center justify-center p-0 md:p-6 mt-30 md:mt-10"
+        class="min-h-screen bg-transparent md:bg-gray-900 text-white flex flex-col items-center justify-center p-0 md:p-6 pt-30 md:pt-10"
     >
         <div
             class="w-full max-w-5xl bg-transparent md:bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl md:border border-white/10 p-0 md:p-6 sm:p-10 space-y-8"
