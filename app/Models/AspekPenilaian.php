@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class AspekPenilaian extends Model
 {
@@ -43,12 +44,27 @@ class AspekPenilaian extends Model
      *
      * @return BelongsTo
      */
+
+    protected $appends = ['nama_with_cabang'];
     public function cabangLomba(): BelongsTo
     {
         return $this->belongsTo(CabangLomba::class, 'id_cabang_lomba');
     }
+
+
     public function penilaians(): HasMany
     {
         return $this->hasMany(Penilaian::class);
+    }
+
+    public function juris()
+    {
+        return $this->belongsToMany(Juri::class, 'aspek_penilaian_juri');
+    }
+    protected function namaWithCabang(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => optional($this->cabangLomba)->nama . " | {$this->nama}"
+        );
     }
 }

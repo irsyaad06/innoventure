@@ -16,4 +16,8 @@ class EditAspekPenilaian extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+    protected function getRedirectUrl(): string
+    {
+        return AspekPenilaianResource::getUrl('index');
+    }
 }

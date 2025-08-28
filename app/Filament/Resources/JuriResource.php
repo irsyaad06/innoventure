@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JuriResource\Pages;
-use App\Filament\Resources\JuriResource\RelationManagers;
 use App\Models\Juri;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,19 +10,17 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\CheckboxList;
+use App\Models\AspekPenilaian;
+
 
 class JuriResource extends Resource
 {
     protected static ?string $model = Juri::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-
     protected static ?string $navigationGroup = 'Data Master';
-
-    protected static ?int $navigationSort = 4;
-
+    protected static ?int $navigationSort = 5;
     protected static ?string $pluralModelLabel = 'Juri';
 
     public static function form(Form $form): Form
@@ -43,30 +40,46 @@ class JuriResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(ignoreRecord: true), // 'ignoreRecord' penting untuk form edit
+                    ->unique(ignoreRecord: true),
 
-                // 👇 INI BAGIAN UTAMA YANG DIPERBAIKI
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required(fn(string $context): bool => $context === 'create')
                     ->minLength(8)
-                    ->confirmed()
                     ->dehydrated(fn($state) => filled($state)),
 
-                // Field tambahan untuk konfirmasi password
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->dehydrated(false)
-                    ->label('Konfirmasi Password'),
+                // Forms\Components\TextInput::make('password_confirmation')
+                //     ->password()
+                //     ->dehydrated(false)
+                //     ->label('Konfirmasi Password'),
 
                 Forms\Components\Toggle::make('is_aktif')
                     ->label('Aktif')
                     ->default(true),
+
+                // 2. Tambahkan komponen CheckboxList di sini
+                CheckboxList::make('aspekPenilaians')
+                    ->relationship(
+                        name: 'aspekPenilaians',
+                        // Kita gunakan 'nama' (kolom asli) untuk titleAttribute agar query awal valid
+                        titleAttribute: 'nama',
+                        // Modifikasi query untuk eager load relasi cabangLomba agar efisien
+                        modifyQueryUsing: fn(Builder $query) => $query->with('cabangLomba')->orderBy('id_cabang_lomba')->orderBy('nama')
+                    )
+                    // INI BAGIAN KUNCINYA: Buat label secara manual untuk setiap record
+                    ->getOptionLabelFromRecordUsing(fn(AspekPenilaian $record) => optional($record->cabangLomba)->nama . " | {$record->nama}")
+                    ->label('Tugaskan Aspek Penilaian')
+                    ->bulkToggleable()
+                    ->columns(2)
+                    ->columnSpanFull(),
+
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
+        // ... (Tidak ada perubahan di sini, kode Anda sudah bagus)
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
@@ -109,7 +122,7 @@ class JuriResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Tambahkan relasi jika ada, misalnya RelationManagers
+            //
         ];
     }
 

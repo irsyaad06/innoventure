@@ -64,21 +64,34 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue"; // 1. Tambahkan onMounted & onBeforeUnmount
 import { useRouter } from "vue-router";
-import { useJuriStore } from "../stores/juriStore"; // Sesuaikan path
-import DigitalDataBG from "../components/DigitalDataBG.vue"; // Sesuaikan path
+import { useJuriStore } from "../stores/juriStore";
+import DigitalDataBG from "../components/DigitalDataBG.vue";
 
 const router = useRouter();
 const juriStore = useJuriStore();
 
-// Ambil data juri dari getter di store
 const juri = computed(() => juriStore.currentJuri);
 
 const handleLogout = async () => {
     await juriStore.logout();
-    router.push("/login-juri"); // Arahkan kembali ke halaman login
+    router.push("/login-juri");
 };
+
+// 2. Tambahkan logika refresh otomatis di sini
+onMounted(() => {
+    const hasRefreshed = sessionStorage.getItem("info_juri_reloaded");
+    if (!hasRefreshed) {
+        sessionStorage.setItem("info_juri_reloaded", "true");
+        window.location.reload();
+    }
+});
+
+onBeforeUnmount(() => {
+    // Hapus penanda saat meninggalkan halaman ini
+    sessionStorage.removeItem("info_juri_reloaded");
+});
 </script>
 
 <style scoped>

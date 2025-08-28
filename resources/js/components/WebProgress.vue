@@ -9,9 +9,18 @@
                 <tr>
                     <th scope="col" class="px-6 py-3 text-center">Rank</th>
                     <th scope="col" class="px-6 py-3">Nama Tim</th>
-                    <th scope="col" class="px-6 py-3 text-amber-300 text-center">Skor</th>
+                    <th
+                        scope="col"
+                        class="px-6 py-3 text-amber-300 text-center"
+                    >
+                        Skor
+                    </th>
                     <th scope="col" class="px-6 py-3 text-center">Action</th>
-                    <th scope="col" class="px-6 py-3 text-center" v-if="juriStore.isAuthenticated">
+                    <th
+                        scope="col"
+                        class="px-6 py-3 text-center"
+                        v-if="juriStore.isAuthenticated"
+                    >
                         Dinilai
                     </th>
                 </tr>
@@ -61,14 +70,22 @@
                             Detail
                         </router-link>
                     </td>
-                    <td class="px-6 py-4 text-center" v-if="juriStore.isAuthenticated">
+                    <td
+                        class="px-6 py-4 text-center"
+                        v-if="juriStore.isAuthenticated"
+                    >
                         <div class="flex items-center justify-center">
                             <input
                                 :id="`checkbox-table-search-${progress.id}`"
                                 type="checkbox"
+                                :disabled="isReadOnly"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                             />
-                            <label :for="`checkbox-table-search-${progress.id}`" class="sr-only">checkbox</label>
+                            <label
+                                :for="`checkbox-table-search-${progress.id}`"
+                                class="sr-only"
+                                >checkbox</label
+                            >
                         </div>
                     </td>
                 </tr>
@@ -78,12 +95,18 @@
                         !progressStore.loading
                     "
                 >
-                    <td :colspan="juriStore.isAuthenticated ? 5 : 4" class="text-center py-4 text-gray-500">
+                    <td
+                        :colspan="juriStore.isAuthenticated ? 5 : 4"
+                        class="text-center py-4 text-gray-500"
+                    >
                         Tidak ada data progress yang tersedia.
                     </td>
                 </tr>
                 <tr v-if="progressStore.loading">
-                    <td :colspan="juriStore.isAuthenticated ? 5 : 4" class="text-center py-4 text-gray-500">
+                    <td
+                        :colspan="juriStore.isAuthenticated ? 5 : 4"
+                        class="text-center py-4 text-gray-500"
+                    >
                         Memuat data...
                     </td>
                 </tr>
@@ -93,12 +116,13 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted , ref} from "vue";
 import { useWebdevProgressStore } from "../stores/webdevProgress";
 import { useJuriStore } from "../stores/juriStore"; // 1. Impor store juri
 
 const progressStore = useWebdevProgressStore();
-const juriStore = useJuriStore(); // 2. Buat instansiasi store
+const juriStore = useJuriStore();
+const isReadOnly = ref(true);
 
 onMounted(() => {
     progressStore.fetchAll();

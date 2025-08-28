@@ -171,7 +171,7 @@
                         </section>
                     </aside>
 
-                    <div class="animate-fade-in" style="animation-delay: 0.2s">
+                    <div class="animate-fade-in">
                         <h2
                             class="text-2xl font-bold text-cyan-400 border-b-2 border-cyan-400/30 pb-3 mb-6"
                         >
@@ -206,12 +206,18 @@
                                         :disabled="!isJuriAuthenticated"
                                         required
                                     />
+
                                     <button
                                         v-if="isJuriAuthenticated"
                                         @click.prevent="
                                             submitSingleScore(aspek)
                                         "
-                                        class="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105"
+                                        :disabled="isAspekDisabled(aspek)"
+                                        class="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105"
+                                        :class="{
+                                            'opacity-50 cursor-not-allowed hover:scale-100 from-gray-600 to-gray-700':
+                                                isAspekDisabled(aspek),
+                                        }"
                                     >
                                         Nilai
                                     </button>
@@ -246,53 +252,54 @@ import { useWebdevProgressStore } from "../stores/webDevProgress.js";
 import { useAspekPenilaianStore } from "../stores/aspekPenilaian.js";
 import { usePenilaianStore } from "../stores/penilaianStore.js";
 import { useJuriStore } from "../stores/juriStore.js";
-import { mapState } from "pinia";
 import DigitalDataBG from "../components/DigitalDataBG.vue";
 import PengesahanJuri from "../components/PengesahanJuri.vue";
 
 export default {
     components: { DigitalDataBG, PengesahanJuri },
-    data() {
-        return {
-            // Hapus 'scores: {}' karena sudah tidak diperlukan
-            comments: "",
-        };
-    },
     computed: {
+        // Mendefinisikan semua store yang dibutuhkan
+        progressStore() {
+            return useWebdevProgressStore();
+        },
+        aspekStore() {
+            return useAspekPenilaianStore();
+        },
         penilaianStore() {
             return usePenilaianStore();
         },
-        ...mapState(useWebdevProgressStore, { detail: "progressDetail" }),
-        // Sekarang aspekPenilaians sudah berisi data skor
-        ...mapState(useAspekPenilaianStore, {
-            aspekPenilaian: "aspekPenilaians",
-        }),
         juriStore() {
             return useJuriStore();
         },
+
+        // Mengambil data dari store
+        detail() {
+            return this.progressStore.progressDetail;
+        },
+        aspekPenilaian() {
+            return this.aspekStore.aspekPenilaians;
+        },
+
+        // Properti untuk otentikasi
         isJuriAuthenticated() {
             return this.juriStore.isAuthenticated;
         },
         currentJuriId() {
-            return this.juriStore.isAuthenticated
-                ? this.juriStore.juri.id
-                : null;
+            return this.juriStore.currentJuri?.id || null;
         },
+        assignedAspekIds() {
+            return this.juriStore.assignedAspekIds;
+        },
+
+        // Properti untuk loading dan error
         isLoading() {
-            return (
-                useWebdevProgressStore().loading ||
-                useAspekPenilaianStore().loading ||
-                usePenilaianStore().isSubmitting
-            );
+            return this.progressStore.loading || this.aspekStore.loading;
         },
         error() {
-            return (
-                useWebdevProgressStore().error ||
-                useAspekPenilaianStore().error ||
-                usePenilaianStore().error
-            );
+            return this.progressStore.error || this.aspekStore.error;
         },
-        // PERUBAHAN: Hitung total dari data yang sudah ada di aspekPenilaians
+
+        // Properti untuk kalkulasi
         totalScore() {
             if (!this.aspekPenilaian || !this.aspekPenilaian.length) return 0;
             return this.aspekPenilaian.reduce((total, aspek) => {
@@ -302,66 +309,65 @@ export default {
             }, 0);
         },
     },
-    // Hapus watcher yang memanggil fetchExistingScores
-    // karena sudah tidak diperlukan
 
     methods: {
+        isAspekDisabled(aspek) {
+            // Langsung gunakan computed property yang sudah reaktif
+            return !this.assignedAspekIds.includes(aspek.id);
+        },
+
         async simpanCatatan() {
             if (!this.detail || !this.detail.tim_id) {
                 alert("Gagal menyimpan: ID Tim tidak ditemukan.");
                 return;
             }
-
-            const penilaianStore = usePenilaianStore();
             const payload = {
                 tim_id: this.detail.tim_id,
                 catatan: this.detail.catatan || "",
             };
-
-            const sukses = await penilaianStore.updateCatatanJuri(payload);
-
+            const sukses = await this.penilaianStore.updateCatatanJuri(payload);
             if (sukses) {
-                alert(penilaianStore.successMessage);
+                alert(this.penilaianStore.successMessage);
             } else {
-                alert(`Gagal menyimpan catatan: ${penilaianStore.error}`);
+                alert(`Gagal menyimpan catatan: ${this.penilaianStore.error}`);
             }
         },
+
         async submitSingleScore(aspek) {
-            // Ambil skor langsung dari objek aspek
             const score = aspek.skor || 0;
             if (score < 0 || score > 100) {
                 alert("Skor harus di antara 0 dan 100.");
                 return;
             }
-            const penilaianStore = usePenilaianStore();
             const payload = {
                 webdev_progress_id: this.detail.id,
                 aspek_penilaian_id: aspek.id,
                 skor: score,
                 juri_id: this.currentJuriId,
             };
-            const result = await penilaianStore.submitScore(payload);
+            const result = await this.penilaianStore.submitScore(payload);
             if (result) {
                 alert(
-                    penilaianStore.successMessage || `Skor berhasil disimpan.`
+                    this.penilaianStore.successMessage ||
+                        `Skor berhasil disimpan.`
                 );
             } else {
-                alert(`Gagal menyimpan skor: ${penilaianStore.error}`);
+                alert(`Gagal menyimpan skor: ${this.penilaianStore.error}`);
             }
         },
     },
+
     async created() {
+        // Karena app.js sudah menunggu, kita bisa langsung fetch data di sini dengan aman
         const submissionId = this.$route.params.id;
-        const progressStore = useWebdevProgressStore();
-        const aspekStore = useAspekPenilaianStore();
+        await this.progressStore.fetchOne(submissionId);
 
-        await progressStore.fetchOne(submissionId);
-        if (progressStore.progressDetail && progressStore.progressDetail.tim) {
-            const idCabangLomba =
-                progressStore.progressDetail.tim.cabang_lomba_id;
-
-            // Perubahan ini tetap sama dari instruksi sebelumnya
-            await aspekStore.fetchByCabangLomba(idCabangLomba, submissionId);
+        if (this.detail && this.detail.tim) {
+            const idCabangLomba = this.detail.tim.cabang_lomba_id;
+            await this.aspekStore.fetchByCabangLomba(
+                idCabangLomba,
+                submissionId
+            );
         }
     },
 };

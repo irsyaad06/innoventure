@@ -77,13 +77,13 @@ Route::get('/penilaian', [PenilaianController::class, 'index']);
 
 Route::get('/list-juri', [JuriController::class, 'index']);
 
-
-
-
 // Juri Only
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/juri', function (Request $request) {
-        return $request->user();
+        $juri = $request->user();
+        $juri->assigned_aspek_ids = $juri->aspekPenilaians()->pluck('aspek_penilaian_id');
+
+        return $juri;
     });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/penilaian', [PenilaianController::class, 'store']);

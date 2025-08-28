@@ -66,4 +66,10 @@ class Juri extends Model implements Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }
+    // app/Models/Juri.php
+
+    public function aspekPenilaians()
+    {
+        return $this->belongsToMany(AspekPenilaian::class, 'aspek_penilaian_juri');
+    }
 }
