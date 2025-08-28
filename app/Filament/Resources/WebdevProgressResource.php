@@ -24,7 +24,7 @@ class WebdevProgressResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?string $navigationGroup = 'Perlombaan';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 9;
     protected static ?string $pluralModelLabel = 'Web Dev';
 
     public static function form(Form $form): Form
