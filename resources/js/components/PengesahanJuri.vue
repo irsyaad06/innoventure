@@ -14,7 +14,7 @@ onMounted(() => {
         class="relative z-10 w-full text-white flex items-center justify-center p-4 sm:p-6"
     >
         <div
-            class="w-full max-w-7xl bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-6 mt-10 sm:p-10"
+            class="w-full max-w-7xl bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-6 mt-10 sm:p-10 card-with-bg-logo"
         >
             <h3 class="text-2xl font-bold text-center text-cyan-400 mb-8">
                 Sebuah Pesan dari Tim Juri
@@ -74,3 +74,24 @@ onMounted(() => {
         </div>
     </div>
 </template>
+<style scoped>
+.card-with-bg-logo {
+    position: relative;
+    z-index: 1;
+}
+
+.card-with-bg-logo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image: url("/img/primary-logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 45%;
+    opacity: 0.12;
+}
+</style>

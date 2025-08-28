@@ -6,14 +6,14 @@
             class="w-full max-w-5xl bg-transparent md:bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl md:border border-white/10 p-0 md:p-6 sm:p-10 space-y-8"
         >
             <div class="text-center" v-if="seminarDetails">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-cyan-400 mb-4 mt-8">
                     {{ seminarDetails.nama }}
                 </h1>
                 <p
                     class="text-gray-300 max-w-3xl mx-auto leading-relaxed text-sm sm:text-base"
                 >
-                    {{ seminarDetails.deskripsi }}
-                    <br /><br />
+                    <!-- {{ seminarDetails.deskripsi }} -->
+                    <!-- <br /><br /> -->
                     Kami mengundang Anda untuk ikut serta dalam
                     <span class="font-semibold text-cyan-400">{{
                         seminarDetails.nama

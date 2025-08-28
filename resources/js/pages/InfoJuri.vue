@@ -1,5 +1,5 @@
 <template>
-    <div class="relative min-h-screen w-full bg-gray-900">
+    <div class="relative min-h-screen w-full bg-gray-900 pt-20 md:pt-0">
         <DigitalDataBG class="absolute inset-0 z-0 opacity-50" />
         <div
             class="relative z-10 flex items-center justify-center min-h-screen p-4"
@@ -44,7 +44,7 @@
                         to="/game-on"
                         class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors text-center w-full sm:w-auto"
                     >
-                        Nilai Web Dev
+                        Penjurian 🚀
                     </router-link>
 
                     <button
