@@ -8,19 +8,23 @@ use Illuminate\Http\Request;
 class WebDevController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Eager load relasi yang dibutuhkan untuk performa optimal
-        $progresses = WebdevProgress::with(['tim.instansi', 'penilaians.aspekPenilaian'])->get();
+        $juri = $request->user('sanctum');
+        $allProgresses = WebdevProgress::with(['tim.instansi'])->get();
+        $sorted = $allProgresses->sortByDesc('total_skor');
+        if ($juri) {
+            $sorted->transform(function ($progress) use ($juri) {
 
-        // 2. Urutkan koleksi berdasarkan 'total_skor' dari yang tertinggi ke terendah
-        //    Accessor 'total_skor' dari model akan otomatis terpanggil di sini
-        $sortedProgresses = $progresses->sortByDesc('total_skor')->values()->all();
-
+                $progress->is_judged_by_current_user = $progress->isJudgingCompleteFor($juri);
+                return $progress;
+            });
+        }
         return response()->json([
             'code' => 200,
             'message' => 'success',
-            'payload' => $sortedProgresses
+
+            'payload' => $sorted->values()->all(),
         ]);
     }
 
@@ -60,7 +64,7 @@ class WebDevController extends Controller
             'ppt'             => 'nullable',
         ]);
 
-  
+
         // Upload PPT jika ada
         if ($request->hasFile('ppt')) {
             $validated['ppt'] = $request->file('ppt')->store('ppt', 'public');

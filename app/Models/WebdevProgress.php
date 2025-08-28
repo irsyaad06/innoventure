@@ -71,4 +71,24 @@ class WebdevProgress extends Model
         // Rata-rata dari total skor semua juri
         return $scoresByJuri->count() > 0 ? $totalAverageScore / $scoresByJuri->count() : 0;
     }
+
+    public function isJudgingCompleteFor(Juri $juri): bool
+    {
+        // 1. Ambil semua ID aspek yang ditugaskan ke juri ini.
+        $assignedAspectIds = $juri->aspekPenilaians()->pluck('aspek_penilaian_id');
+
+        // Jika juri tidak punya tugas aspek sama sekali, anggap sudah selesai.
+        if ($assignedAspectIds->isEmpty()) {
+            return true;
+        }
+
+        // 2. Ambil semua ID aspek yang SUDAH dinilai oleh juri ini UNTUK KARYA INI.
+        $scoredAspectIds = $this->penilaians()
+            ->where('juri_id', $juri->id)
+            ->pluck('aspek_penilaian_id');
+
+        // 3. Bandingkan keduanya. Jika jumlahnya sama, berarti sudah selesai.
+        // Kita gunakan diff() untuk memastikan semua aspek yang ditugaskan ada di dalam yang sudah dinilai.
+        return $assignedAspectIds->diff($scoredAspectIds)->isEmpty();
+    }
 }
