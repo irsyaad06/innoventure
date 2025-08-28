@@ -1,14 +1,14 @@
 <template>
     <div
-        class="min-h-screen w-full flex flex-col items-center justify-center text-white overflow-hidden bg-gray-900 relative pt-20 pb-10"
+        class="min-h-screen w-full flex flex-col items-center justify-center text-white overflow-hidden bg-gray-900 relative pt-30 pb-10"
     >
         <DigitalDataBG class="absolute inset-0 z-0" />
 
         <div
             v-if="seminarStore.isLoading"
-            class="text-xl md:text-2xl text-white/80 z-10 animate-pulse"
+            class="text-xl md:text-2xl text-cyan-400 animate-pulse z-10"
         >
-            Memuat data seminar...
+            Tunggu Sebentar Yaa > . <
         </div>
 
         <div
@@ -101,6 +101,32 @@
                 </p>
             </div>
         </transition>
+        <div class="w-full max-w-6xl mx-auto mt-30">
+            <h2
+                class="text-3xl font-bold text-center text-white mb-10 animate-fade-in-up"
+            >
+                Apa yang Akan Anda Dapatkan?
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                    v-for="(feature, index) in features"
+                    :key="feature.title"
+                    class="feature-card animate-fade-in-up"
+                    :style="{ 'animation-delay': `${index * 100}ms` }"
+                >
+                    <div class="text-4xl mb-4">{{ feature.icon }}</div>
+
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">
+                        {{ feature.title }}
+                    </h3>
+
+                    <p class="text-gray-400 text-sm">
+                        {{ feature.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -108,6 +134,7 @@
 // Bagian script tidak perlu diubah
 import { useSeminarStore } from "../stores/seminarStore";
 import DigitalDataBG from "../components/DigitalDataBG.vue";
+// Di dalam <script setup> atau bagian data() Anda
 
 export default {
     components: { DigitalDataBG },
@@ -119,8 +146,47 @@ export default {
             seconds: "00",
             interval: null,
             seminarStore: useSeminarStore(),
+            features: [
+                {
+                    icon: "🎤",
+                    title: "Inspiring Guest Star",
+                    description:
+                        "Pembicara tamu inspiratif langsung dari DISDIK JABAR.",
+                },
+                {
+                    icon: "🏅",
+                    title: "Sertifikat Eksklusif",
+                    description:
+                        "Dapatkan E-Sertifikat resmi sebagai bukti partisipasi Anda.",
+                },
+                {
+                    icon: "🤝",
+                    title: "Networking Session",
+                    description:
+                        "Perluas koneksi Anda dengan para profesional dan peserta lain.",
+                },
+                {
+                    icon: "🍔",
+                    title: "Makan Siang Gratis",
+                    description:
+                        "Tersedia untuk 100 pendaftar pertama yang hadir di lokasi.",
+                },
+                {
+                    icon: "🎁",
+                    title: "Puluhan Doorprize",
+                    description:
+                        "Menangkan berbagai hadiah menarik yang sudah kami siapkan.",
+                },
+                {
+                    icon: "🏆",
+                    title: "Awarding Session",
+                    description:
+                        "Saksikan pengumuman dan penganugerahan para pemenang lomba.",
+                },
+            ],
         };
     },
+
     computed: {
         targetDate() {
             if (
@@ -198,7 +264,40 @@ export default {
 </script>
 
 <style scoped>
-/* 👇 STYLE DIPERBARUI UNTUK MENGGUNAKAN @media QUERY */
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(6, 182, 212, 0.5); /* Warna cyan */
+    box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1);
+}
+
+/* Animasi yang sudah ada di komponen Anda */
+@keyframes fadeIn-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeIn-up 0.5s ease-out forwards;
+    opacity: 0; /* Mulai dari tidak terlihat */
+}
 
 /* Ukuran default untuk mobile */
 .countdown-card {
