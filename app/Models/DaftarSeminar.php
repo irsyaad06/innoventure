@@ -84,4 +84,9 @@ class DaftarSeminar extends Model
             }
         });
     }
+
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class, 'daftar_seminar_id');
+    }
 }
