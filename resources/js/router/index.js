@@ -4,6 +4,7 @@ import MainLayout from "../layouts/MainLayout.vue";
 import BerandaPage from "../pages/BerandaPage.vue";
 import MobileLegendPage from "../pages/MobileLegendPage.vue";
 import WebDevelopmentPage from "../pages/WebDevelopmentPage.vue";
+import SayembaraLogoPage from "../pages/SayembaraLogoPage.vue";
 import Kompetisi from "../pages/Kompetisi.vue";
 import GameOn from "../pages/GameOnPage.vue";
 import Seminar from "../pages/SeminarPage.vue";
@@ -14,6 +15,7 @@ import DaftarLomba from "../pages/DaftarLomba.vue";
 import DetailWebDev from "../pages/DetailWebDev.vue";
 import JuriLogin from "../pages/LoginJuri.vue";
 import InfoJuri from "../pages/InfoJuri.vue";
+import DetailSayembara from "../pages/DetailSayembara.vue";
 
 const routes = [
     {
@@ -41,6 +43,11 @@ const routes = [
             },
 
             {
+                path: "/kompetisi/sayembara-logo",
+                component: SayembaraLogoPage,
+            },
+
+            {
                 path: "/game-on",
                 component: GameOn,
             },
@@ -48,6 +55,10 @@ const routes = [
             {
                 path: "/detail-web/:id",
                 component: DetailWebDev,
+            },
+            {
+                path: "/detail-sayembara/:id",
+                component: DetailSayembara,
             },
 
             {

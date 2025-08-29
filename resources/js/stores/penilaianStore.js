@@ -96,11 +96,6 @@ export const usePenilaianStore = defineStore("penilaian", {
             }
         },
 
-        /**
-         * FUNGSI BARU: Mengirim catatan juri ke server.
-         * @param {Object} payload - Berisi { tim_id, catatan }
-         * @returns {boolean} - True jika berhasil, false jika gagal.
-         */
         async updateCatatanJuri(payload) {
             this.isSubmitting = true;
             this.error = null;

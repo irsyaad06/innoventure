@@ -16,18 +16,18 @@ return new class extends Migration
 
             // Foreign key to the project submission
             $table->foreignId('webdev_progress_id')
-                  ->constrained('webdev_progress')
-                  ->onDelete('cascade');
+                ->constrained('webdev_progress')
+                ->onDelete('cascade');
 
             // Foreign key to the assessment aspect
             $table->foreignId('aspek_penilaian_id')
-                  ->constrained('aspek_penilaians')
-                  ->onDelete('cascade');
-            
+                ->constrained('aspek_penilaians')
+                ->onDelete('cascade');
+
             // Foreign key to the judge (assuming a 'users' table)
             $table->foreignId('juri_id')
-                  ->constrained('juris')
-                  ->onDelete('cascade');
+                ->constrained('juris')
+                ->onDelete('cascade');
 
             $table->unsignedInteger('skor');
             $table->timestamps();

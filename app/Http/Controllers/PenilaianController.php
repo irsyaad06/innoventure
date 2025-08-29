@@ -90,7 +90,6 @@ class PenilaianController extends Controller
             'payload' => $hasilKarya,
         ]);
     }
-
     public function getAverageScores($progressId)
     {
         $penilaians = Penilaian::where('webdev_progress_id', $progressId)
@@ -115,7 +114,6 @@ class PenilaianController extends Controller
             'payload' => $averageScores,
         ]);
     }
-
     public function updateCatatanJuri(Request $request)
     {
         // 1. Validasi input, pastikan tim_id dan catatan ada

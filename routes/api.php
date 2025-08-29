@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\JuriController;
+use App\Http\Controllers\PenilaianSayembaraController;
+use App\Http\Controllers\SayembaraController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\WebDevController;
@@ -43,6 +45,10 @@ Route::prefix('webdev-progress')->group(function () {
     Route::get('/', [WebDevController::class, 'index']);
     Route::get('/{id}', [WebDevController::class, 'show']);
     Route::post('/', [WebDevController::class, 'store']);
+});
+Route::prefix('sayembara-logo')->group(function () {
+    Route::get('/', [SayembaraController::class, 'index']);
+    Route::get('/{id}', [SayembaraController::class, 'show']);
 });
 
 Route::prefix('seminar')->group(function () {
@@ -88,4 +94,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/penilaian', [PenilaianController::class, 'store']);
     Route::post('/penilaian/catatan-webdev', [PenilaianController::class, 'updateCatatanJuri']);
+
+    Route::post('/penilaian-sayembara', [PenilaianSayembaraController::class, 'storeOrUpdate']);
 });
+Route::get('/penilaian-sayembara/{progressId}/juri/{juriId}', [PenilaianSayembaraController::class, 'getScoresByJuri']);
+Route::get('/penilaian-sayembara/{sayembaraProgress}', [PenilaianSayembaraController::class, 'show']);

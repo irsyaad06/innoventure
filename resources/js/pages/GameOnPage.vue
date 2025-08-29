@@ -51,6 +51,9 @@
                 <div v-else-if="selectedLomba?.nama === 'Web Development'">
                     <WebProgress />
                 </div>
+                <div v-else-if="selectedLomba?.nama === 'Sayembara Logo'">
+                    <SayembaraProgress />
+                </div>
                 <p v-else>404 Not Found</p>
             </div>
         </div>
@@ -63,6 +66,7 @@ import { useCabangLombaStore } from "../stores/cabangLomba";
 import DigitalDataBG from "../components/DigitalDataBG.vue";
 import MLBracket from "../components/MLBracket.vue";
 import WebProgress from "../components/WebProgress.vue";
+import SayembaraProgress from "../components/SayembaraProgress.vue";
 
 const cabangLombaStore = useCabangLombaStore();
 const selectedLomba = ref(null);

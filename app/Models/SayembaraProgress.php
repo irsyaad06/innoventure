@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SayembaraProgress extends Model
 {
@@ -12,18 +12,14 @@ class SayembaraProgress extends Model
 
     /**
      * Nama tabel yang terhubung dengan model ini.
-     *
-     * @var string
      */
     protected $table = 'sayembara_progress';
 
     /**
      * Atribut yang dapat diisi secara massal.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
-        'tim_id',
+        'nama_lengkap',
         'nim',
         'kelas',
         'angkatan',
@@ -32,17 +28,30 @@ class SayembaraProgress extends Model
         'link_gdrive_logo',
     ];
 
+    /**
+     * Menambahkan accessor ke dalam representasi array/JSON model.
+     * Ini penting agar 'total_skor' bisa diakses dari frontend.
+     */
+    protected $appends = ['total_skor'];
+
+    /**
+     * Definisikan relasi ke PenilaianSayembara.
+     */
+    public function penilaians()
+    {
+        return $this->hasMany(PenilaianSayembara::class);
+    }
+
     public function tim()
     {
         return $this->belongsTo(Tim::class);
     }
 
-    public function penilaians(): HasMany
-    {
-        return $this->hasMany(Penilaian::class);
-    }
-
-    public function getTotalSkorAttribute(): float // <-- 2. TAMBAHKAN METHOD INI
+    /**
+     * Accessor untuk menghitung total skor akhir.
+     * Logikanya sama persis dengan yang ada di WebdevProgress.
+     */
+    public function getTotalSkorAttribute(): float
     {
         // Mengambil semua penilaian terkait beserta aspeknya untuk efisiensi
         $penilaians = $this->penilaians()->with('aspekPenilaian')->get();
@@ -71,6 +80,11 @@ class SayembaraProgress extends Model
         return $scoresByJuri->count() > 0 ? $totalAverageScore / $scoresByJuri->count() : 0;
     }
 
+    /**
+     * Memeriksa apakah seorang juri sudah selesai menilai semua aspek
+     * yang ditugaskan kepadanya untuk karya ini.
+     * Logikanya juga sama persis.
+     */
     public function isJudgingCompleteFor(Juri $juri): bool
     {
         // 1. Ambil semua ID aspek yang ditugaskan ke juri ini.
@@ -87,7 +101,6 @@ class SayembaraProgress extends Model
             ->pluck('aspek_penilaian_id');
 
         // 3. Bandingkan keduanya. Jika jumlahnya sama, berarti sudah selesai.
-        // Kita gunakan diff() untuk memastikan semua aspek yang ditugaskan ada di dalam yang sudah dinilai.
         return $assignedAspectIds->diff($scoredAspectIds)->isEmpty();
     }
 }
