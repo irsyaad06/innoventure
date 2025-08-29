@@ -1,8 +1,5 @@
 <x-filament::page>
-    <div
-        class="space-y-6 max-w-xl mx-auto"
-        {{-- Listener event dari backend untuk re-focus input teks setelah scan fisik/manual --}}
-        @scan-berhasil.window="$nextTick(() => document.getElementById('kodeAbsen').focus())">
+    <div class="space-y-6 max-w-xl mx-auto">
 
         {{-- BAGIAN 1: FORM UNTUK INPUT MANUAL & SCANNER FISIK --}}
         <div id="manual-scanner-section">
@@ -27,10 +24,9 @@
 
         {{-- BAGIAN 2: TOMBOL & WADAH UNTUK SCANNER KAMERA HP --}}
         <div id="camera-scanner-section" class="text-center">
-            {{-- Wadah untuk tampilan kamera, awalnya tersembunyi --}}
-            <div id="qr-reader" class="w-full border-2 border-dashed border-gray-300 rounded-lg overflow-hidden mb-4" style="display: none;"></div>
+            {{-- PERUBAHAN FINAL ADA DI BARIS INI --}}
+            <div id="qr-reader" class="w-full border-2 border-dashed border-gray-300 rounded-lg overflow-hidden mb-4" style="display: none; height: 300px;"></div>
 
-            {{-- Tombol untuk memulai dan menghentikan scanner kamera --}}
             <x-filament::button
                 id="cameraButton"
                 icon="heroicon-o-qr-code"
@@ -41,37 +37,27 @@
         </div>
 
     </div>
-    @push('scripts')
-    {{-- Memuat library html5-qrcode dari CDN --}}
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+    @push('scripts')
+    {{-- (Bagian script tidak ada perubahan, tetap sama seperti sebelumnya) --}}
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
             const inputKodeAbsen = document.getElementById('kodeAbsen');
 
-            // --- LOGIKA UNTUK SCANNER FISIK & INPUT MANUAL ---
             inputKodeAbsen.addEventListener('change', function() {
                 if (inputKodeAbsen.value.trim() !== '') {
                     @this.submit();
                 }
             });
 
-            // =================================================================
-            // BARU: Listener untuk event 'scan-berhasil' dari backend
-            // Ini menggantikan directive AlpineJS yang kita hapus tadi.
             window.addEventListener('scan-berhasil', event => {
-                // Beri jeda sedikit (50 milidetik) untuk memastikan Livewire selesai
-                // memperbarui tampilan sebelum kita melakukan fokus.
                 setTimeout(() => {
-                    inputKodeAbsen.value = ''; // Pastikan input benar-benar kosong
-                    inputKodeAbsen.focus(); // Fokuskan kembali ke input
+                    inputKodeAbsen.value = '';
+                    inputKodeAbsen.focus();
                 }, 50);
             });
-            // =================================================================
 
-
-            // --- LOGIKA UNTUK SCANNER KAMERA HP ---
             if (typeof Html5Qrcode === 'undefined') return;
 
             const qrReader = document.getElementById('qr-reader');
