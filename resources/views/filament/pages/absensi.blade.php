@@ -24,7 +24,6 @@
 
         {{-- BAGIAN 2: TOMBOL & WADAH UNTUK SCANNER KAMERA HP --}}
         <div id="camera-scanner-section" class="text-center">
-            {{-- PERUBAHAN FINAL ADA DI BARIS INI --}}
             <div id="qr-reader" class="w-full border-2 border-dashed border-gray-300 rounded-lg overflow-hidden mb-4" style="display: none; height: 300px;"></div>
 
             <x-filament::button
@@ -39,10 +38,23 @@
     </div>
 
     @push('scripts')
-    {{-- (Bagian script tidak ada perubahan, tetap sama seperti sebelumnya) --}}
+    {{-- ======================================================================= --}}
+    {{-- PERBAIKAN FINAL: Tambahkan blok CSS ini --}}
+    <style>
+        #qr-reader video {
+            /* Paksa video untuk mengisi lebar wadah */
+            width: 100% !important;
+            /* Atur tinggi secara otomatis sesuai rasio */
+            height: auto !important;
+        }
+    </style>
+    {{-- ======================================================================= --}}
+
+    {{-- Memuat library html5-qrcode dari CDN --}}
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ... (Seluruh kode JavaScript lainnya tetap sama, tidak perlu diubah) ...
             const inputKodeAbsen = document.getElementById('kodeAbsen');
 
             inputKodeAbsen.addEventListener('change', function() {
