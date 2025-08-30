@@ -40,7 +40,7 @@ class AbsensiResource extends Resource
                 ->rowIndex(),
 
                 // PERUBAHAN 2: Mengubah ID menjadi nama dari relasi
-                TextColumn::make('daftarSeminar.peserta.nama') // Asumsi relasi: Absensi -> DaftarSeminar -> Peserta
+                TextColumn::make('absensis.peserta.nama') // Asumsi relasi: Absensi -> DaftarSeminar -> Peserta
                     ->label('Nama Peserta')
                     ->searchable()
                     ->sortable(),
