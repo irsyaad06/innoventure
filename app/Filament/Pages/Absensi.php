@@ -9,7 +9,7 @@ use Filament\Notifications\Notification;
 
 class Absensi extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
+    protected static bool $shouldRegisterNavigation = false;
     protected static string $view = 'filament.pages.absensi';
     protected static ?string $title = 'Absensi Seminar';
 
