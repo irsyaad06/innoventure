@@ -11,6 +11,7 @@ use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\TimController;
 use App\Http\Controllers\MlMatchController;
 use App\Http\Controllers\SeminarController;
+use App\Http\Controllers\DaftarSeminarController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MedpartController;
 use App\Http\Controllers\DaftarSeminar;
@@ -99,3 +100,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('/penilaian-sayembara/{progressId}/juri/{juriId}', [PenilaianSayembaraController::class, 'getScoresByJuri']);
 Route::get('/penilaian-sayembara/{sayembaraProgress}', [PenilaianSayembaraController::class, 'show']);
+
+
+Route::get('/undian-peserta', [DaftarSeminarController::class, 'getUndianData']);

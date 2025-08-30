@@ -16,6 +16,7 @@ import DetailWebDev from "../pages/DetailWebDev.vue";
 import JuriLogin from "../pages/LoginJuri.vue";
 import InfoJuri from "../pages/InfoJuri.vue";
 import DetailSayembara from "../pages/DetailSayembara.vue";
+import UndianPage from "../pages/UndianPage.vue";
 
 const routes = [
     {
@@ -93,6 +94,12 @@ const routes = [
                 name: "InfoJuri",
                 component: InfoJuri,
                 meta: { requiresAuth: true },
+            },
+
+            {
+                path: "/undian-hadiah",
+                name: "UndianPage",
+                component: UndianPage,
             },
         ],
     },
