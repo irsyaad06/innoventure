@@ -37,10 +37,10 @@ class AbsensiResource extends Resource
             ->columns([
                 // PERUBAHAN 1: Menambahkan kolom nomor urut (row index)
                 TextColumn::make('No')
-                ->rowIndex(),
+                    ->rowIndex(),
 
                 // PERUBAHAN 2: Mengubah ID menjadi nama dari relasi
-                TextColumn::make('absensis.peserta.nama') // Asumsi relasi: Absensi -> DaftarSeminar -> Peserta
+                TextColumn::make('daftarSeminar.nama') // Asumsi relasi: Absensi -> DaftarSeminar -> Peserta
                     ->label('Nama Peserta')
                     ->searchable()
                     ->sortable(),

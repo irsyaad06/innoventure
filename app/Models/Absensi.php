@@ -18,7 +18,12 @@ class Absensi extends Model
         'waktu_absen' => 'datetime',
     ];
 
-    public function peserta()
+    // public function peserta()
+    // {
+    //     return $this->belongsTo(DaftarSeminar::class, 'daftar_seminar_id');
+    // }
+
+    public function daftarSeminar() // Ubah nama method menjadi 'daftarSeminar'
     {
         return $this->belongsTo(DaftarSeminar::class, 'daftar_seminar_id');
     }
